@@ -9,7 +9,7 @@
 import UIKit
 import CoreData
 
-
+@available (iOS 8.0,*)
 class HMCDManager: NSObject {
     static let shared = HMCDManager()
     
@@ -59,6 +59,7 @@ class HMCDManager: NSObject {
         }
     }
     
+    @available (iOS 8.0,*)
     private var objectModel: NSManagedObjectModel  {
         get{
             if self.s_objectModel != nil {
@@ -73,6 +74,7 @@ class HMCDManager: NSObject {
         }
     }
     
+    @available(iOS 10.0,*)
     private func getModelBy(modelName:String)->NSPersistentStoreDescription?{
         if let filepath = Bundle.main.url(forResource: modelName, withExtension: "xcdatamodeld"){
              return NSPersistentStoreDescription.init(url: filepath)
@@ -81,25 +83,31 @@ class HMCDManager: NSObject {
         }
     }
     
-    
+    @available (iOS 8.0,*)
     private var persistentCoordinator: NSPersistentStoreCoordinator{
         get{
             if self.s_storeCoordinator != nil {
                 return self.s_storeCoordinator!
             }
             self.s_storeCoordinator =  NSPersistentStoreCoordinator.init(managedObjectModel: self.objectModel)
-            for modelName in self.coreDataModelNames{
-                print(modelName)
-                if let modelDes = self.getModelBy(modelName: modelName){
-                    print("desc \(modelDes)")
-                    self.s_storeCoordinator?.addPersistentStore(with: modelDes, completionHandler: { (modeldes, error ) in
-                        if error != nil {
-                            debugPrint("HMCDManager add model \(modelName) failure:\(error!.localizedDescription)")
-                        }
-                    })
-                }
-            }
+            
+            if #available(iOS 10.0, *) {
 
+                for modelName in self.coreDataModelNames{
+                    print(modelName)
+                    
+                    if let modelDes = self.getModelBy(modelName: modelName){
+                        print("desc \(modelDes)")
+                        self.s_storeCoordinator?.addPersistentStore(with: modelDes, completionHandler: { (modeldes, error ) in
+                            if error != nil {
+                                debugPrint("HMCDManager add model \(modelName) failure:\(error!.localizedDescription)")
+                            }
+                        })
+                    }
+                }
+            } else {
+
+            }
             do{
                 try self.s_storeCoordinator!.addPersistentStore(ofType: NSSQLiteStoreType, configurationName: nil , at: self.dbPathUrl, options: nil)
             }catch{
@@ -161,7 +169,7 @@ class HMCDManager: NSObject {
     
     
     // MARK: - Core Data Saving support
-    
+    @available (iOS 8.0,*)
     @objc func saveContext()->Bool {
         
         if context.hasChanges {
@@ -180,6 +188,7 @@ class HMCDManager: NSObject {
     }
     
     //MARK:增
+    @available (iOS 8.0,*)
     @objc func add(entityName:String,values:[String:Any]?,success:((NSManagedObject)->Void)?, failure:((String)->Void)?){
         
         let entity = NSEntityDescription.entity(forEntityName: entityName, in: context)
@@ -198,7 +207,7 @@ class HMCDManager: NSObject {
             failure?("add Error:\(error.localizedDescription)")
         }
     }
-    
+    @available (iOS 8.0,*)
     @objc func add(entity:NSManagedObject,values:[String:Any]?,success:((NSManagedObject)->Void)?, failure:((String)->Void)?){
         for kv in values ?? [:]{
             entity.setValue(kv.value, forKey: kv.key)
@@ -212,7 +221,7 @@ class HMCDManager: NSObject {
             failure?("add Error:\(error.localizedDescription)")
         }
     }
-    
+    @available (iOS 8.0,*)
     @objc func add(entitys:[NSManagedObject],success:(([NSManagedObject])->Void)?, failure:((String)->Void)?){
         for obj in entitys{
             context.insert(obj)
@@ -228,6 +237,7 @@ class HMCDManager: NSObject {
     
     
     //MARK:删
+    @available (iOS 8.0,*)
     @objc func delete(entity:NSManagedObject,complettion: ((String?)->Void)?){
         
         context.delete(entity)
@@ -239,14 +249,14 @@ class HMCDManager: NSObject {
             complettion?("delete Error:\(error.localizedDescription)")
         }
     }
-    
+    @available (iOS 8.0,*)
     @objc func delete(entityName:String,complettion: ((String?)->Void)?){
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>.init(entityName: entityName)
         self.delete(fetchRequest: fetchRequest) { (error) in
             complettion?(error)
         }
     }
-    
+    @available (iOS 8.0,*)
     @objc func delete(fetchRequest:NSFetchRequest<NSFetchRequestResult>,complettion: ((String?)->Void)?){
         do {
             let fetchedResults = try context.fetch(fetchRequest) as? [NSManagedObject]
@@ -266,6 +276,7 @@ class HMCDManager: NSObject {
     }
     
     //MARK:改
+    @available (iOS 8.0,*)
     @objc func update(entity:NSManagedObject,values:[String:Any]?,success:((NSManagedObject)->Void)?, failure:((String)->Void)?){
         
         for kv in values ?? [:]{
@@ -281,6 +292,7 @@ class HMCDManager: NSObject {
     }
     
     //MARK:查
+    @available (iOS 8.0,*)
     @objc func query(fetchRequest:NSFetchRequest<NSFetchRequestResult>,success:(([NSManagedObject])->Void), failure:((String)->Void)?){
         do {
             let fetchedResults = try context.fetch(fetchRequest) as? [NSManagedObject]
@@ -289,10 +301,9 @@ class HMCDManager: NSObject {
             failure?(error.localizedDescription)
         }
         
-    }
+    } 
     
-    
-    
+    @available (iOS 8.0,*)
     @objc func query(myclass:AnyClass,offset:Int,limitCount:Int,success:(([NSManagedObject])->Void), failure:((String)->Void)?){
         self.query(myclass: myclass, predicate: nil , sortBy: nil , sortAscending: false , offset: offset, limitCount: limitCount, success: { (objs ) in
             success(objs)

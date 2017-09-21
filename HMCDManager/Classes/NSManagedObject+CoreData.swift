@@ -9,6 +9,7 @@
 import UIKit
 import CoreData
 
+@available (iOS 8.0,*)
 extension  NSManagedObject {
 
     @objc public convenience init(myvalues:[String:Any]?){
@@ -23,13 +24,6 @@ extension  NSManagedObject {
     }
     
     class func newObj()->NSManagedObject{
-        //        if let entity = NSEntityDescription.entity(forEntityName: "\(self)", in: HMCDManager.shared.context){
-        //            let obj = NSManagedObject(entity: entity, insertInto: HMCDManager.shared.context)
-        //            return obj
-        //        }else {
-        //            return nil
-        //        }
-        
         let obj = NSEntityDescription.insertNewObject(forEntityName: "\(self)", into: HMCDManager.shared.context)
         return obj
     }
