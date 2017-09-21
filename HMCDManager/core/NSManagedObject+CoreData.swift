@@ -1,5 +1,5 @@
 //
-//  CoreData.swift
+//  NSManagedObject+CoreData.swift
 //  HMCDManager
 //
 //  Created by HuangZhongQing on 2017/9/21.

@@ -12,7 +12,7 @@
 		669BC1DE1F73979F005B5774 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 669BC1DD1F73979F005B5774 /* Assets.xcassets */; };
 		669BC1E11F73979F005B5774 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 669BC1DF1F73979F005B5774 /* LaunchScreen.storyboard */; };
 		669BC1E91F7397BA005B5774 /* first.xcdatamodel in Sources */ = {isa = PBXBuildFile; fileRef = 669BC1E81F7397BA005B5774 /* first.xcdatamodel */; };
-		669BC1EB1F739808005B5774 /* CoreData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 669BC1EA1F739808005B5774 /* CoreData.swift */; };
+		669BC1EB1F739808005B5774 /* NSManagedObject+CoreData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 669BC1EA1F739808005B5774 /* NSManagedObject+CoreData.swift */; };
 		669BC1EE1F739866005B5774 /* HMCDManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 669BC1ED1F739866005B5774 /* HMCDManager.swift */; };
 		669BC1F01F7398EB005B5774 /* DemoTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 669BC1EF1F7398EB005B5774 /* DemoTableViewController.swift */; };
 /* End PBXBuildFile section */
@@ -25,7 +25,7 @@
 		669BC1E01F73979F005B5774 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		669BC1E21F73979F005B5774 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		669BC1E81F7397BA005B5774 /* first.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = first.xcdatamodel; sourceTree = "<group>"; };
-		669BC1EA1F739808005B5774 /* CoreData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CoreData.swift; path = core/CoreData.swift; sourceTree = "<group>"; };
+		669BC1EA1F739808005B5774 /* NSManagedObject+CoreData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "NSManagedObject+CoreData.swift"; path = "core/NSManagedObject+CoreData.swift"; sourceTree = "<group>"; };
 		669BC1ED1F739866005B5774 /* HMCDManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HMCDManager.swift; path = core/HMCDManager.swift; sourceTree = "<group>"; };
 		669BC1EF1F7398EB005B5774 /* DemoTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DemoTableViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -75,7 +75,7 @@
 		669BC1EC1F73980F005B5774 /* core */ = {
 			isa = PBXGroup;
 			children = (
-				669BC1EA1F739808005B5774 /* CoreData.swift */,
+				669BC1EA1F739808005B5774 /* NSManagedObject+CoreData.swift */,
 				669BC1ED1F739866005B5774 /* HMCDManager.swift */,
 			);
 			name = core;
@@ -155,7 +155,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				669BC1EE1F739866005B5774 /* HMCDManager.swift in Sources */,
-				669BC1EB1F739808005B5774 /* CoreData.swift in Sources */,
+				669BC1EB1F739808005B5774 /* NSManagedObject+CoreData.swift in Sources */,
 				669BC1F01F7398EB005B5774 /* DemoTableViewController.swift in Sources */,
 				669BC1E91F7397BA005B5774 /* first.xcdatamodel in Sources */,
 				669BC1D71F73979F005B5774 /* AppDelegate.swift in Sources */,
@@ -324,6 +324,7 @@
 				669BC1E71F73979F005B5774 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
