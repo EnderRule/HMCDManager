@@ -13,7 +13,7 @@ import CoreData
 class HMCDManager: NSObject {
     static let shared = HMCDManager()
     
-    var coreDataModelName:String = "default"
+    var coreDataModelNames:[String] = []
     
     var userDBName:String = ""{
         didSet{
@@ -64,7 +64,7 @@ class HMCDManager: NSObject {
             if self.s_objectModel != nil {
                 return self.s_objectModel!
             }else {
-                if let filepath = Bundle.main.url(forResource: self.coreDataModelName, withExtension: "xcdatamodeld"){
+                if let filepath = Bundle.main.url(forResource: self.coreDataModelNames.first!, withExtension: "xcdatamodeld"){
                     self.s_objectModel = NSManagedObjectModel.init(contentsOf: filepath)
                 }
                 self.s_objectModel = NSManagedObjectModel.mergedModel(from: nil )
@@ -73,16 +73,33 @@ class HMCDManager: NSObject {
         }
     }
     
+    private func getModelBy(modelName:String)->NSPersistentStoreDescription?{
+        if let filepath = Bundle.main.url(forResource: modelName, withExtension: "xcdatamodeld"){
+             return NSPersistentStoreDescription.init(url: filepath)
+        }else {
+            return nil
+        }
+    }
+    
+    
     private var persistentCoordinator: NSPersistentStoreCoordinator{
         get{
             if self.s_storeCoordinator != nil {
                 return self.s_storeCoordinator!
             }
-            self.s_storeCoordinator = NSPersistentStoreCoordinator.init(managedObjectModel: self.objectModel)
-            
-            
-            //            self.s_storeCoordinator?.addPersistentStore(with: <#T##NSPersistentStoreDescription#>, completionHandler: <#T##(NSPersistentStoreDescription, Error?) -> Void#>)
-            
+            self.s_storeCoordinator =  NSPersistentStoreCoordinator.init(managedObjectModel: self.objectModel)
+            for modelName in self.coreDataModelNames{
+                print(modelName)
+                if let modelDes = self.getModelBy(modelName: modelName){
+                    print("desc \(modelDes)")
+                    self.s_storeCoordinator?.addPersistentStore(with: modelDes, completionHandler: { (modeldes, error ) in
+                        if error != nil {
+                            debugPrint("HMCDManager add model \(modelName) failure:\(error!.localizedDescription)")
+                        }
+                    })
+                }
+            }
+
             do{
                 try self.s_storeCoordinator!.addPersistentStore(ofType: NSSQLiteStoreType, configurationName: nil , at: self.dbPathUrl, options: nil)
             }catch{
@@ -101,9 +118,21 @@ class HMCDManager: NSObject {
          application to it. This property is optional since there are legitimate
          error conditions that could cause the creation of the store to fail.
          */
-        let container:NSPersistentContainer = NSPersistentContainer(name: self.coreDataModelName)
+        let container:NSPersistentContainer = NSPersistentContainer(name: "")
         do{
             try  container.persistentStoreCoordinator.addPersistentStore(ofType: NSSQLiteStoreType, configurationName: nil , at: self.dbPathUrl, options: nil )
+            
+            for modelName in self.coreDataModelNames{
+                
+                if let modelDes = self.getModelBy(modelName: modelName){
+                    container.persistentStoreCoordinator.addPersistentStore(with: modelDes, completionHandler: { (modeldes, error ) in
+                        if error != nil {
+                            debugPrint("HMCDManager add model \(modelName) failure:\(error!.localizedDescription)")
+                        }
+                    })
+                }
+                
+            }
         }catch{
             print("load url failure \(error)")
         }

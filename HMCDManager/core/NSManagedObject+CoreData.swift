@@ -34,7 +34,6 @@ extension  NSManagedObject {
         return obj
     }
     
-    
     @objc func db_add(values:[String:Any],success:((NSManagedObject)->Void)?, failure:((String)->Void)?){
         HMCDManager.shared.add(entity: self , values: values, success: { (obj ) in
             success?(obj)
@@ -79,6 +78,7 @@ extension  NSManagedObject {
             failure?(error)
         }
     }
+    
     @objc class func db_query(offset:Int,limitCount:Int,success:(([NSManagedObject])->Void), failure:((String)->Void)?){
         HMCDManager.shared.query(myclass: self, predicate: nil , sortBy: nil , sortAscending: false , offset: offset, limitCount: limitCount, success: { (objs ) in
             success(objs)
@@ -86,6 +86,7 @@ extension  NSManagedObject {
             failure?(error)
         }
     }
+    
     @objc class func db_query(predicate:NSPredicate?,sortBy:String?,sortAscending:Bool,offset:Int,limitCount:Int,success:(([NSManagedObject])->Void), failure:((String)->Void)?){
         HMCDManager.shared.query(myclass: self, predicate: predicate , sortBy: sortBy , sortAscending: sortAscending , offset: offset, limitCount: limitCount, success: { (objs ) in
             success(objs)

@@ -5,18 +5,12 @@
         <attribute name="id" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="name" attributeType="String" syncable="YES"/>
     </entity>
-    <entity name="Message" representedClassName="Message" syncable="YES" codeGenerationType="class">
-        <attribute name="msgContent" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="msgID" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
-        <attribute name="senderID" optional="YES" attributeType="String" syncable="YES"/>
-    </entity>
     <entity name="Person" representedClassName="Person" syncable="YES" codeGenerationType="class">
         <attribute name="name" attributeType="String" syncable="YES"/>
         <attribute name="uid" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
     </entity>
     <elements>
         <element name="Group" positionX="63" positionY="54" width="128" height="90"/>
-        <element name="Message" positionX="-81" positionY="74" width="414" height="88"/>
         <element name="Person" positionX="-63" positionY="-18" width="128" height="73"/>
     </elements>
 </model>

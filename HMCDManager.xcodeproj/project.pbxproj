@@ -15,6 +15,8 @@
 		669BC1EB1F739808005B5774 /* NSManagedObject+CoreData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 669BC1EA1F739808005B5774 /* NSManagedObject+CoreData.swift */; };
 		669BC1EE1F739866005B5774 /* HMCDManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 669BC1ED1F739866005B5774 /* HMCDManager.swift */; };
 		669BC1F01F7398EB005B5774 /* DemoTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 669BC1EF1F7398EB005B5774 /* DemoTableViewController.swift */; };
+		669BC1F21F73AB7D005B5774 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 669BC1F11F73AB7D005B5774 /* Message.swift */; };
+		669BC1F51F73BD4C005B5774 /* second.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 669BC1F31F73BD4C005B5774 /* second.xcdatamodeld */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +30,8 @@
 		669BC1EA1F739808005B5774 /* NSManagedObject+CoreData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "NSManagedObject+CoreData.swift"; path = "core/NSManagedObject+CoreData.swift"; sourceTree = "<group>"; };
 		669BC1ED1F739866005B5774 /* HMCDManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HMCDManager.swift; path = core/HMCDManager.swift; sourceTree = "<group>"; };
 		669BC1EF1F7398EB005B5774 /* DemoTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DemoTableViewController.swift; sourceTree = "<group>"; };
+		669BC1F11F73AB7D005B5774 /* Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
+		669BC1F41F73BD4C005B5774 /* second.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = second.xcdatamodel; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,12 +66,14 @@
 			children = (
 				669BC1D61F73979F005B5774 /* AppDelegate.swift */,
 				669BC1EF1F7398EB005B5774 /* DemoTableViewController.swift */,
+				669BC1F11F73AB7D005B5774 /* Message.swift */,
 				669BC1EC1F73980F005B5774 /* core */,
 				669BC1DA1F73979F005B5774 /* Main.storyboard */,
 				669BC1DD1F73979F005B5774 /* Assets.xcassets */,
 				669BC1DF1F73979F005B5774 /* LaunchScreen.storyboard */,
 				669BC1E21F73979F005B5774 /* Info.plist */,
 				669BC1E81F7397BA005B5774 /* first.xcdatamodel */,
+				669BC1F31F73BD4C005B5774 /* second.xcdatamodeld */,
 			);
 			path = HMCDManager;
 			sourceTree = "<group>";
@@ -154,9 +160,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				669BC1F51F73BD4C005B5774 /* second.xcdatamodeld in Sources */,
 				669BC1EE1F739866005B5774 /* HMCDManager.swift in Sources */,
 				669BC1EB1F739808005B5774 /* NSManagedObject+CoreData.swift in Sources */,
 				669BC1F01F7398EB005B5774 /* DemoTableViewController.swift in Sources */,
+				669BC1F21F73AB7D005B5774 /* Message.swift in Sources */,
 				669BC1E91F7397BA005B5774 /* first.xcdatamodel in Sources */,
 				669BC1D71F73979F005B5774 /* AppDelegate.swift in Sources */,
 			);
@@ -286,6 +294,7 @@
 				DEVELOPMENT_TEAM = F9M2T7SUYF;
 				INFOPLIST_FILE = HMCDManager/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = fulladvantage.linking.HMCDManager;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
@@ -299,6 +308,7 @@
 				DEVELOPMENT_TEAM = F9M2T7SUYF;
 				INFOPLIST_FILE = HMCDManager/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = fulladvantage.linking.HMCDManager;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
@@ -327,6 +337,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		669BC1F31F73BD4C005B5774 /* second.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				669BC1F41F73BD4C005B5774 /* second.xcdatamodel */,
+			);
+			currentVersion = 669BC1F41F73BD4C005B5774 /* second.xcdatamodel */;
+			path = second.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 669BC1CB1F73979F005B5774 /* Project object */;
 }

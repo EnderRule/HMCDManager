@@ -15,7 +15,7 @@ class DemoTableViewController: UITableViewController {
     
     var people = [NSManagedObject]()
     
-    private var segment:UISegmentedControl = UISegmentedControl.init(items: ["person","group","switch database"])
+    private var segment:UISegmentedControl = UISegmentedControl.init(items: ["person","group","message"])
     
     let cellIdentifier = "nameCell"
     
@@ -29,10 +29,11 @@ class DemoTableViewController: UITableViewController {
         self.navigationItem.titleView = segment
         
         let clearBt = UIBarButtonItem.init(title: "清除", style: .plain, target: self , action: #selector(self.clearAll))
-        
-        self.navigationItem.leftBarButtonItem = clearBt
+        let switchDB = UIBarButtonItem.init(title: "切换数据库", style: .plain, target: self , action: #selector(self.switchDBClick))
+        self.navigationItem.leftBarButtonItems = [clearBt,switchDB]
         
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellIdentifier)
+        
     }
     
     override func didReceiveMemoryWarning() {
@@ -45,18 +46,18 @@ class DemoTableViewController: UITableViewController {
         self.requestAndRelaod()
     }
     
-    func segmentChange(sender:UISegmentedControl){
-        if segment.selectedSegmentIndex == 2 {
-            if HMCDManager.shared.userDBName == ""{
-                HMCDManager.shared.userDBName = "user3"
-            }else{
-                HMCDManager.shared.userDBName = ""
-            }
-            self.segment.selectedSegmentIndex = 0
-            self.segment.sendActions(for: .valueChanged)
+    func switchDBClick(){
+        if HMCDManager.shared.userDBName == ""{
+            HMCDManager.shared.userDBName = "user3"
         }else{
-            self.requestAndRelaod()
+            HMCDManager.shared.userDBName = ""
         }
+        
+        self.requestAndRelaod()
+    }
+    
+    func segmentChange(sender:UISegmentedControl){
+        self.requestAndRelaod()
     }
     
     // MARK: - Table view data source
@@ -81,15 +82,17 @@ class DemoTableViewController: UITableViewController {
             cell.textLabel?.text = "person name:\(person.name!)  id:\(person.uid)"
         }else if let group:Group = obj as? Group{
             cell.textLabel?.text = "group name:\(group.name!)  id:\(group.id)"
+        }else if let msg:Message = obj as? Message {
+            cell.textLabel?.text = "msg sender:\(msg.senderID)  \(msg.msgContent)"
         }
         return cell
     }
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
-        let person = people[indexPath.row]
+        let obj = people[indexPath.row]
         
-        person.db_delete { (error ) in
+        obj.db_delete { (error ) in
             if error == nil {
-                self.people.remove(at: self.people.index(of: person)!)
+                self.people.remove(at: self.people.index(of: obj)!)
                 tableView.deleteRows(at: [indexPath], with: .automatic)
             }else{
                 print("delete error :\(error!)")
@@ -103,27 +106,37 @@ class DemoTableViewController: UITableViewController {
     
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let person = people[indexPath.row]
+        let obj = people[indexPath.row]
         let alert = UIAlertController(title: "修改姓名", message: nil, preferredStyle: .alert)
         let saveAction = UIAlertAction(title: "保存", style: .default) { (action :UIAlertAction!) in
             let textField = alert.textFields![0] as UITextField
-            
-            person.db_update(values: ["name":textField.text ?? ""], success: { (person ) in
-                self.tableView.reloadRows(at: [indexPath], with: .automatic)
-            }) { (error ) in
-                print("update failure :\(error)")
+            if self.segment.selectedSegmentIndex == 2 {
+                obj.db_update(values: ["msgContent":textField.text ?? ""], success: { (person ) in
+                    self.tableView.reloadRows(at: [indexPath], with: .automatic)
+                }) { (error ) in
+                    print("update failure :\(error)")
+                }
+            }else {
+                obj.db_update(values: ["name":textField.text ?? ""], success: { (person ) in
+                    self.tableView.reloadRows(at: [indexPath], with: .automatic)
+                }) { (error ) in
+                    print("update failure :\(error)")
+                }
             }
         }
         
         let cancelAction = UIAlertAction(title: "取消", style: .cancel) { (action: UIAlertAction) in
-            
         }
         
         alert.addAction(saveAction)
         alert.addAction(cancelAction)
         
         alert.addTextField { (textField: UITextField) in
-            textField.text = person.value(forKey: "name") as? String
+            if obj is Message{
+                textField.text = (obj as! Message).msgContent
+            }else{
+                textField.text = obj.value(forKey: "name") as? String
+            }
         }
         
         present(alert, animated: true, completion: nil)
@@ -132,8 +145,10 @@ class DemoTableViewController: UITableViewController {
     private func requestAndRelaod(){
         if segment.selectedSegmentIndex == 0 {
             self.requestPersonAndReload()
-        }else {
+        }else if segment.selectedSegmentIndex == 1 {
             self.requestGroupsAndReload()
+        }else {
+            self.requestMessageAndReload()
         }
     }
     
@@ -166,7 +181,7 @@ class DemoTableViewController: UITableViewController {
             self.people = objs
             self.tableView.reloadData()
         }, failure: { (error ) in
-            print("request error :\(error)")
+            print("request Person error :\(error)")
         })
     }
     
@@ -175,7 +190,17 @@ class DemoTableViewController: UITableViewController {
             self.people = objs
             self.tableView.reloadData()
         }, failure: { (error ) in
-            print("request error :\(error)")
+            print("request Group error :\(error)")
+        })
+    }
+    
+    private func requestMessageAndReload(){
+        
+        Message.db_query(predicate: nil , sortBy: nil, sortAscending: true , offset: 0, limitCount: 0, success: { (objs) in
+            self.people = objs
+            self.tableView.reloadData()
+        }, failure: { (error ) in
+            print("request Message error :\(error)")
         })
     }
     
@@ -206,13 +231,28 @@ class DemoTableViewController: UITableViewController {
                         }
                     })
                 }
-            }else {
+            }else if self.segment.selectedSegmentIndex == 0 {
                 if let pers:Person = Person.newObj() as? Person{
                     pers.name = textField.text ?? "defailt person name"
                     
                     pers.db_update(completion: { (error) in
                         if error == nil  {
                             self.people.append(pers)
+                            self.tableView.reloadData()
+                        }else{
+                            print("add group name failure:\(error!)")
+                        }
+                    })
+                }
+            }else {
+                if let msg:Message = Message.newObj() as? Message{
+                    msg.msgContent = textField.text ?? "defailt person name"
+                    msg.msgID  = 333
+                    msg.senderID = "sender3243"
+                    
+                    msg.db_update(completion: { (error) in
+                        if error == nil  {
+                            self.people.append(msg)
                             self.tableView.reloadData()
                         }else{
                             print("add group name failure:\(error!)")
