@@ -74,14 +74,14 @@ class HMCDManager: NSObject {
         }
     }
     
-    @available(iOS 10.0,*)
-    private func getModelBy(modelName:String)->NSPersistentStoreDescription?{
-        if let filepath = Bundle.main.url(forResource: modelName, withExtension: "xcdatamodeld"){
-             return NSPersistentStoreDescription.init(url: filepath)
-        }else {
-            return nil
-        }
-    }
+//    @available(iOS 10.0,*)
+//    private func getModelBy(modelName:String)->NSPersistentStoreDescription?{
+//        if let filepath = Bundle.main.url(forResource: modelName, withExtension: "xcdatamodeld"){
+//             return NSPersistentStoreDescription.init(url: filepath)
+//        }else {
+//            return nil
+//        }
+//    }
     
     @available (iOS 8.0,*)
     private var persistentCoordinator: NSPersistentStoreCoordinator{
@@ -91,23 +91,23 @@ class HMCDManager: NSObject {
             }
             self.s_storeCoordinator =  NSPersistentStoreCoordinator.init(managedObjectModel: self.objectModel)
             
-            if #available(iOS 10.0, *) {
-
-                for modelName in self.coreDataModelNames{
-                    print(modelName)
-                    
-                    if let modelDes = self.getModelBy(modelName: modelName){
-                        print("desc \(modelDes)")
-                        self.s_storeCoordinator?.addPersistentStore(with: modelDes, completionHandler: { (modeldes, error ) in
-                            if error != nil {
-                                debugPrint("HMCDManager add model \(modelName) failure:\(error!.localizedDescription)")
-                            }
-                        })
-                    }
-                }
-            } else {
-
-            }
+//            if #available(iOS 10.0, *) {
+//
+//                for modelName in self.coreDataModelNames{
+//                    print(modelName)
+//                    
+//                    if let modelDes = self.getModelBy(modelName: modelName){
+//                        print("desc \(modelDes)")
+//                        self.s_storeCoordinator?.addPersistentStore(with: modelDes, completionHandler: { (modeldes, error ) in
+//                            if error != nil {
+//                                debugPrint("HMCDManager add model \(modelName) failure:\(error!.localizedDescription)")
+//                            }
+//                        })
+//                    }
+//                }
+//            } else {
+//
+//            }
             do{
                 try self.s_storeCoordinator!.addPersistentStore(ofType: NSSQLiteStoreType, configurationName: nil , at: self.dbPathUrl, options: nil)
             }catch{
@@ -118,51 +118,51 @@ class HMCDManager: NSObject {
     }
     
     
-    @available(iOS 10.0, *)
-    lazy var container: NSPersistentContainer = {
-        /*
-         The persistent container for the application. This implementation
-         creates and returns a container, having loaded the store for the
-         application to it. This property is optional since there are legitimate
-         error conditions that could cause the creation of the store to fail.
-         */
-        let container:NSPersistentContainer = NSPersistentContainer(name: "")
-        do{
-            try  container.persistentStoreCoordinator.addPersistentStore(ofType: NSSQLiteStoreType, configurationName: nil , at: self.dbPathUrl, options: nil )
-            
-            for modelName in self.coreDataModelNames{
-                
-                if let modelDes = self.getModelBy(modelName: modelName){
-                    container.persistentStoreCoordinator.addPersistentStore(with: modelDes, completionHandler: { (modeldes, error ) in
-                        if error != nil {
-                            debugPrint("HMCDManager add model \(modelName) failure:\(error!.localizedDescription)")
-                        }
-                    })
-                }
-                
-            }
-        }catch{
-            print("load url failure \(error)")
-        }
-        container.loadPersistentStores(completionHandler: { (storeDescription, error) in
-            if let error = error as NSError? {
-                // Replace this implementation with code to handle the error appropriately.
-                
-                /*
-                 Typical reasons for an error here include:
-                 * The parent directory does not exist, cannot be created, or disallows writing.
-                 * The persistent store is not accessible, due to permissions or data protection when the device is locked.
-                 * The device is out of space.
-                 * The store could not be migrated to the current model version.
-                 Check the error message to determine what the actual problem was.
-                 */
-                debugPrint("Unresolved error \(error), \(error.userInfo)")
-            }else{
-                print(storeDescription)
-            }
-        })
-        return container
-    }()
+//    @available(iOS 10.0, *)
+//    lazy var container: NSPersistentContainer = {
+//        /*
+//         The persistent container for the application. This implementation
+//         creates and returns a container, having loaded the store for the
+//         application to it. This property is optional since there are legitimate
+//         error conditions that could cause the creation of the store to fail.
+//         */
+//        let container:NSPersistentContainer = NSPersistentContainer(name: "")
+//        do{
+//            try  container.persistentStoreCoordinator.addPersistentStore(ofType: NSSQLiteStoreType, configurationName: nil , at: self.dbPathUrl, options: nil )
+//            
+//            for modelName in self.coreDataModelNames{
+//                
+//                if let modelDes = self.getModelBy(modelName: modelName){
+//                    container.persistentStoreCoordinator.addPersistentStore(with: modelDes, completionHandler: { (modeldes, error ) in
+//                        if error != nil {
+//                            debugPrint("HMCDManager add model \(modelName) failure:\(error!.localizedDescription)")
+//                        }
+//                    })
+//                }
+//                
+//            }
+//        }catch{
+//            print("load url failure \(error)")
+//        }
+//        container.loadPersistentStores(completionHandler: { (storeDescription, error) in
+//            if let error = error as NSError? {
+//                // Replace this implementation with code to handle the error appropriately.
+//                
+//                /*
+//                 Typical reasons for an error here include:
+//                 * The parent directory does not exist, cannot be created, or disallows writing.
+//                 * The persistent store is not accessible, due to permissions or data protection when the device is locked.
+//                 * The device is out of space.
+//                 * The store could not be migrated to the current model version.
+//                 Check the error message to determine what the actual problem was.
+//                 */
+//                debugPrint("Unresolved error \(error), \(error.userInfo)")
+//            }else{
+//                print(storeDescription)
+//            }
+//        })
+//        return container
+//    }()
     
     
     
@@ -301,7 +301,7 @@ class HMCDManager: NSObject {
             failure?(error.localizedDescription)
         }
         
-    } 
+    }
     
     @available (iOS 8.0,*)
     @objc func query(myclass:AnyClass,offset:Int,limitCount:Int,success:(([NSManagedObject])->Void), failure:((String)->Void)?){
