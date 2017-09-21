@@ -12,11 +12,11 @@
 		669BC1DE1F73979F005B5774 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 669BC1DD1F73979F005B5774 /* Assets.xcassets */; };
 		669BC1E11F73979F005B5774 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 669BC1DF1F73979F005B5774 /* LaunchScreen.storyboard */; };
 		669BC1E91F7397BA005B5774 /* first.xcdatamodel in Sources */ = {isa = PBXBuildFile; fileRef = 669BC1E81F7397BA005B5774 /* first.xcdatamodel */; };
-		669BC1EB1F739808005B5774 /* NSManagedObject+CoreData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 669BC1EA1F739808005B5774 /* NSManagedObject+CoreData.swift */; };
-		669BC1EE1F739866005B5774 /* HMCDManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 669BC1ED1F739866005B5774 /* HMCDManager.swift */; };
 		669BC1F01F7398EB005B5774 /* DemoTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 669BC1EF1F7398EB005B5774 /* DemoTableViewController.swift */; };
 		669BC1F21F73AB7D005B5774 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 669BC1F11F73AB7D005B5774 /* Message.swift */; };
 		669BC1F51F73BD4C005B5774 /* second.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 669BC1F31F73BD4C005B5774 /* second.xcdatamodeld */; };
+		669BC1F91F73C5AC005B5774 /* HMCDManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 669BC1F71F73C5AC005B5774 /* HMCDManager.swift */; };
+		669BC1FA1F73C5AC005B5774 /* NSManagedObject+CoreData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 669BC1F81F73C5AC005B5774 /* NSManagedObject+CoreData.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,11 +27,11 @@
 		669BC1E01F73979F005B5774 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		669BC1E21F73979F005B5774 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		669BC1E81F7397BA005B5774 /* first.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = first.xcdatamodel; sourceTree = "<group>"; };
-		669BC1EA1F739808005B5774 /* NSManagedObject+CoreData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "NSManagedObject+CoreData.swift"; path = "core/NSManagedObject+CoreData.swift"; sourceTree = "<group>"; };
-		669BC1ED1F739866005B5774 /* HMCDManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HMCDManager.swift; path = core/HMCDManager.swift; sourceTree = "<group>"; };
 		669BC1EF1F7398EB005B5774 /* DemoTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DemoTableViewController.swift; sourceTree = "<group>"; };
 		669BC1F11F73AB7D005B5774 /* Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		669BC1F41F73BD4C005B5774 /* second.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = second.xcdatamodel; sourceTree = "<group>"; };
+		669BC1F71F73C5AC005B5774 /* HMCDManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HMCDManager.swift; sourceTree = "<group>"; };
+		669BC1F81F73C5AC005B5774 /* NSManagedObject+CoreData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSManagedObject+CoreData.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -67,7 +67,7 @@
 				669BC1D61F73979F005B5774 /* AppDelegate.swift */,
 				669BC1EF1F7398EB005B5774 /* DemoTableViewController.swift */,
 				669BC1F11F73AB7D005B5774 /* Message.swift */,
-				669BC1EC1F73980F005B5774 /* core */,
+				669BC1F61F73C5AC005B5774 /* Classes */,
 				669BC1DA1F73979F005B5774 /* Main.storyboard */,
 				669BC1DD1F73979F005B5774 /* Assets.xcassets */,
 				669BC1DF1F73979F005B5774 /* LaunchScreen.storyboard */,
@@ -78,13 +78,13 @@
 			path = HMCDManager;
 			sourceTree = "<group>";
 		};
-		669BC1EC1F73980F005B5774 /* core */ = {
+		669BC1F61F73C5AC005B5774 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				669BC1EA1F739808005B5774 /* NSManagedObject+CoreData.swift */,
-				669BC1ED1F739866005B5774 /* HMCDManager.swift */,
+				669BC1F71F73C5AC005B5774 /* HMCDManager.swift */,
+				669BC1F81F73C5AC005B5774 /* NSManagedObject+CoreData.swift */,
 			);
-			name = core;
+			path = Classes;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -160,13 +160,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				669BC1FA1F73C5AC005B5774 /* NSManagedObject+CoreData.swift in Sources */,
 				669BC1F51F73BD4C005B5774 /* second.xcdatamodeld in Sources */,
-				669BC1EE1F739866005B5774 /* HMCDManager.swift in Sources */,
-				669BC1EB1F739808005B5774 /* NSManagedObject+CoreData.swift in Sources */,
 				669BC1F01F7398EB005B5774 /* DemoTableViewController.swift in Sources */,
 				669BC1F21F73AB7D005B5774 /* Message.swift in Sources */,
 				669BC1E91F7397BA005B5774 /* first.xcdatamodel in Sources */,
 				669BC1D71F73979F005B5774 /* AppDelegate.swift in Sources */,
+				669BC1F91F73C5AC005B5774 /* HMCDManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
