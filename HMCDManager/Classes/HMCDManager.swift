@@ -75,9 +75,9 @@ class HMCDManager: NSObject {
     }
     
 //    @available(iOS 10.0,*)
-//    private func getModelBy(modelName:String)->NSPersistentStoreDescription?{
+//    private func getModelBy(modelName:String)->NSPersistentSt oreDescription?{
 //        if let filepath = Bundle.main.url(forResource: modelName, withExtension: "xcdatamodeld"){
-//             return NSPersistentStoreDescription.init(url: filepath)
+//             return NSPersistentS toreDescription.init(url: filepath)
 //        }else {
 //            return nil
 //        }
@@ -98,7 +98,7 @@ class HMCDManager: NSObject {
 //                    
 //                    if let modelDes = self.getModelBy(modelName: modelName){
 //                        print("desc \(modelDes)")
-//                        self.s_storeCoordinator?.addPersistentStore(with: modelDes, completionHandler: { (modeldes, error ) in
+//                        self.s_storeCoordinator?.addPersist entStore(with: modelDes, completionHandler: { (modeldes, error ) in
 //                            if error != nil {
 //                                debugPrint("HMCDManager add model \(modelName) failure:\(error!.localizedDescription)")
 //                            }
@@ -108,10 +108,13 @@ class HMCDManager: NSObject {
 //            } else {
 //
 //            }
+            
+            
             do{
-                try self.s_storeCoordinator!.addPersistentStore(ofType: NSSQLiteStoreType, configurationName: nil , at: self.dbPathUrl, options: nil)
+                try self.s_storeCoordinator?.addPersistentStore(ofType:NSSQLiteStoreType, configurationName: nil , at: self.dbPathUrl, options: nil )
+//                try self.s_storeCoordinator!.addPersistentStore(ofType: NSSQLiteStoreType, configurationName: nil , at: self.dbPathUrl, options: nil)
             }catch{
-                print("storeCoordinator!.addPersistentStore failure \(error.localizedDescription)")
+                print("add PersistentStore failure \(error.localizedDescription)")
             }
             return self.s_storeCoordinator!
         }
