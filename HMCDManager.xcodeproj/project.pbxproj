@@ -17,6 +17,8 @@
 		669BC1F51F73BD4C005B5774 /* second.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 669BC1F31F73BD4C005B5774 /* second.xcdatamodeld */; };
 		669BC1F91F73C5AC005B5774 /* HMCDManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 669BC1F71F73C5AC005B5774 /* HMCDManager.swift */; };
 		669BC1FA1F73C5AC005B5774 /* NSManagedObject+CoreData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 669BC1F81F73C5AC005B5774 /* NSManagedObject+CoreData.swift */; };
+		66B8603F1F750A8A005D1FCE /* APPInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 66B8603E1F750A8A005D1FCE /* APPInfo.m */; };
+		66B860421F750B4F005D1FCE /* third.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 66B860401F750B4F005D1FCE /* third.xcdatamodeld */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +34,10 @@
 		669BC1F41F73BD4C005B5774 /* second.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = second.xcdatamodel; sourceTree = "<group>"; };
 		669BC1F71F73C5AC005B5774 /* HMCDManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HMCDManager.swift; sourceTree = "<group>"; };
 		669BC1F81F73C5AC005B5774 /* NSManagedObject+CoreData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSManagedObject+CoreData.swift"; sourceTree = "<group>"; };
+		66B8603C1F750A8A005D1FCE /* HMCDManager-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "HMCDManager-Bridging-Header.h"; sourceTree = "<group>"; };
+		66B8603D1F750A8A005D1FCE /* APPInfo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = APPInfo.h; path = Classes/APPInfo.h; sourceTree = "<group>"; };
+		66B8603E1F750A8A005D1FCE /* APPInfo.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = APPInfo.m; path = Classes/APPInfo.m; sourceTree = "<group>"; };
+		66B860411F750B4F005D1FCE /* third.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = third.xcdatamodel; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -67,6 +73,8 @@
 				669BC1D61F73979F005B5774 /* AppDelegate.swift */,
 				669BC1EF1F7398EB005B5774 /* DemoTableViewController.swift */,
 				669BC1F11F73AB7D005B5774 /* Message.swift */,
+				66B8603D1F750A8A005D1FCE /* APPInfo.h */,
+				66B8603E1F750A8A005D1FCE /* APPInfo.m */,
 				669BC1F61F73C5AC005B5774 /* Classes */,
 				669BC1DA1F73979F005B5774 /* Main.storyboard */,
 				669BC1DD1F73979F005B5774 /* Assets.xcassets */,
@@ -74,6 +82,8 @@
 				669BC1E21F73979F005B5774 /* Info.plist */,
 				669BC1E81F7397BA005B5774 /* first.xcdatamodel */,
 				669BC1F31F73BD4C005B5774 /* second.xcdatamodeld */,
+				66B860401F750B4F005D1FCE /* third.xcdatamodeld */,
+				66B8603C1F750A8A005D1FCE /* HMCDManager-Bridging-Header.h */,
 			);
 			path = HMCDManager;
 			sourceTree = "<group>";
@@ -120,6 +130,7 @@
 					669BC1D21F73979F005B5774 = {
 						CreatedOnToolsVersion = 8.3.3;
 						DevelopmentTeam = F9M2T7SUYF;
+						LastSwiftMigration = 0900;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -161,9 +172,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				669BC1FA1F73C5AC005B5774 /* NSManagedObject+CoreData.swift in Sources */,
+				66B8603F1F750A8A005D1FCE /* APPInfo.m in Sources */,
 				669BC1F51F73BD4C005B5774 /* second.xcdatamodeld in Sources */,
 				669BC1F01F7398EB005B5774 /* DemoTableViewController.swift in Sources */,
 				669BC1F21F73AB7D005B5774 /* Message.swift in Sources */,
+				66B860421F750B4F005D1FCE /* third.xcdatamodeld in Sources */,
 				669BC1E91F7397BA005B5774 /* first.xcdatamodel in Sources */,
 				669BC1D71F73979F005B5774 /* AppDelegate.swift in Sources */,
 				669BC1F91F73C5AC005B5774 /* HMCDManager.swift in Sources */,
@@ -291,6 +304,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				DEVELOPMENT_TEAM = F9M2T7SUYF;
 				INFOPLIST_FILE = HMCDManager/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
@@ -298,6 +312,8 @@
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = fulladvantage.linking.HMCDManager;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "HMCDManager/HMCDManager-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
@@ -306,6 +322,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				DEVELOPMENT_TEAM = F9M2T7SUYF;
 				INFOPLIST_FILE = HMCDManager/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
@@ -313,6 +330,7 @@
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = fulladvantage.linking.HMCDManager;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "HMCDManager/HMCDManager-Bridging-Header.h";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
@@ -348,6 +366,16 @@
 			);
 			currentVersion = 669BC1F41F73BD4C005B5774 /* second.xcdatamodel */;
 			path = second.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+		66B860401F750B4F005D1FCE /* third.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				66B860411F750B4F005D1FCE /* third.xcdatamodel */,
+			);
+			currentVersion = 66B860411F750B4F005D1FCE /* third.xcdatamodel */;
+			path = third.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
 		};

@@ -15,6 +15,6 @@ class Message: NSManagedObject {
     @NSManaged var msgID:Int32
     @NSManaged var senderID:String
     @NSManaged var msgContent:String
-
+ 
     
 }
