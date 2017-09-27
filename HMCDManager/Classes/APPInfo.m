@@ -18,13 +18,9 @@
 -(void)didChangeValueForKey:(NSString *)key{
     NSLog(@"did change %@",key);
 }
-
-
-
 @dynamic appid;
 @dynamic name;
-
-
+ 
 +(void)runTest{
     
     APPInfo *app = [APPInfo newObj];

@@ -15,7 +15,7 @@ class DemoTableViewController: UITableViewController {
     
     var people = [NSManagedObject]()
     
-    private var segment:UISegmentedControl = UISegmentedControl.init(items: ["person","group","Msg","Apps"])
+    private var segment:UISegmentedControl = UISegmentedControl.init(items: ["person","group","Msg","Apps","Test"])
     
     let cellIdentifier = "nameCell"
     
@@ -30,7 +30,10 @@ class DemoTableViewController: UITableViewController {
         
         let clearBt = UIBarButtonItem.init(title: "清除", style: .plain, target: self , action: #selector(self.clearAll))
         let switchDB = UIBarButtonItem.init(title: "切换库", style: .plain, target: self , action: #selector(self.switchDBClick))
+        let addBt = UIBarButtonItem.init(title: "+", style: .plain, target: self , action: #selector(self.addName(_:)))
         self.navigationItem.leftBarButtonItems = [clearBt,switchDB]
+        self.navigationItem.rightBarButtonItem = addBt
+        
         
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellIdentifier)
         
@@ -57,7 +60,13 @@ class DemoTableViewController: UITableViewController {
     }
     
     func segmentChange(sender:UISegmentedControl){
-        self.requestAndRelaod()
+        if sender.selectedSegmentIndex == 4{
+            let vc = TestViewController.init()
+            vc.hidesBottomBarWhenPushed = true
+            self.navigationController?.pushViewController(vc, animated: true)
+        }else{
+            self.requestAndRelaod()
+        }
     }
     
     // MARK: - Table view data source

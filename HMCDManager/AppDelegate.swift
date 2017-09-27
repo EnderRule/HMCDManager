@@ -16,32 +16,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
-       
-        HMCDManager.shared.coreDataModelNames.append("first")
-        HMCDManager.shared.coreDataModelNames.append("second")
-        HMCDManager.shared.userDBName = ""///"user3"
         
-        APPInfo.runTest()
+//        APPInfo.runTest()
         
-//        if let app:APPInfo = APPInfo.newObj() as? APPInfo{
-//
-//            app.appid = Int16(arc4random()%UInt32(1000))
-//            app.name =  "defailt  name"
-//            app.db_update(completion: { (error) in
-//                if error == nil  {
-//                }else{
-//                    print("add group name failure:\(error!)")
-//                }
-//            })
-//
-//            APPInfo.db_query(offset: 0, limitCount: 0, success: { (objs ) in
-//                for obj in objs{
-//                    print(obj.value(forKey: "appid")!)
-//                }
-//            }, failure: { (error ) in
-//                print(error)
-//            })
-//        }
+        let rootVC = UINavigationController.init(rootViewController: DemoTableViewController.init())
+        
+        self.window = UIWindow.init(frame: UIScreen.main.bounds)
+        self.window?.rootViewController = rootVC
+        self.window?.makeKeyAndVisible()
         
         return true
     }
