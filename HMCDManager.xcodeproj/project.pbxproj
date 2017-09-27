@@ -16,8 +16,8 @@
 		669BC1F51F73BD4C005B5774 /* second.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 669BC1F31F73BD4C005B5774 /* second.xcdatamodeld */; };
 		669BC1F91F73C5AC005B5774 /* HMCDManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 669BC1F71F73C5AC005B5774 /* HMCDManager.swift */; };
 		669BC1FA1F73C5AC005B5774 /* NSManagedObject+CoreData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 669BC1F81F73C5AC005B5774 /* NSManagedObject+CoreData.swift */; };
-		66B8603F1F750A8A005D1FCE /* APPInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 66B8603E1F750A8A005D1FCE /* APPInfo.m */; };
 		66B860421F750B4F005D1FCE /* third.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 66B860401F750B4F005D1FCE /* third.xcdatamodeld */; };
+		66DF62381F7B3F5E00BDABC9 /* APPInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 66DF62371F7B3F5E00BDABC9 /* APPInfo.m */; };
 		66DF66EF1F7A2D2A00E59892 /* TestViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 66DF66EE1F7A2D2A00E59892 /* TestViewController.m */; };
 /* End PBXBuildFile section */
 
@@ -34,9 +34,9 @@
 		669BC1F71F73C5AC005B5774 /* HMCDManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HMCDManager.swift; sourceTree = "<group>"; };
 		669BC1F81F73C5AC005B5774 /* NSManagedObject+CoreData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSManagedObject+CoreData.swift"; sourceTree = "<group>"; };
 		66B8603C1F750A8A005D1FCE /* HMCDManager-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "HMCDManager-Bridging-Header.h"; sourceTree = "<group>"; };
-		66B8603D1F750A8A005D1FCE /* APPInfo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = APPInfo.h; path = Classes/APPInfo.h; sourceTree = "<group>"; };
-		66B8603E1F750A8A005D1FCE /* APPInfo.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = APPInfo.m; path = Classes/APPInfo.m; sourceTree = "<group>"; };
 		66B860411F750B4F005D1FCE /* third.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = third.xcdatamodel; sourceTree = "<group>"; };
+		66DF62361F7B3F5E00BDABC9 /* APPInfo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = APPInfo.h; sourceTree = "<group>"; };
+		66DF62371F7B3F5E00BDABC9 /* APPInfo.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = APPInfo.m; sourceTree = "<group>"; };
 		66DF66ED1F7A2D2A00E59892 /* TestViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TestViewController.h; sourceTree = "<group>"; };
 		66DF66EE1F7A2D2A00E59892 /* TestViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TestViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -76,8 +76,8 @@
 				669BC1F11F73AB7D005B5774 /* Message.swift */,
 				66DF66ED1F7A2D2A00E59892 /* TestViewController.h */,
 				66DF66EE1F7A2D2A00E59892 /* TestViewController.m */,
-				66B8603D1F750A8A005D1FCE /* APPInfo.h */,
-				66B8603E1F750A8A005D1FCE /* APPInfo.m */,
+				66DF62361F7B3F5E00BDABC9 /* APPInfo.h */,
+				66DF62371F7B3F5E00BDABC9 /* APPInfo.m */,
 				669BC1F61F73C5AC005B5774 /* Classes */,
 				669BC1DD1F73979F005B5774 /* Assets.xcassets */,
 				669BC1DF1F73979F005B5774 /* LaunchScreen.storyboard */,
@@ -136,7 +136,7 @@
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.Keychain = {
-								enabled = 1;
+								enabled = 0;
 							};
 						};
 					};
@@ -178,7 +178,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				669BC1FA1F73C5AC005B5774 /* NSManagedObject+CoreData.swift in Sources */,
-				66B8603F1F750A8A005D1FCE /* APPInfo.m in Sources */,
+				66DF62381F7B3F5E00BDABC9 /* APPInfo.m in Sources */,
 				669BC1F51F73BD4C005B5774 /* second.xcdatamodeld in Sources */,
 				669BC1F01F7398EB005B5774 /* DemoTableViewController.swift in Sources */,
 				66DF66EF1F7A2D2A00E59892 /* TestViewController.m in Sources */,
@@ -316,7 +316,6 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = HMCDManager/HMCDManager.entitlements;
 				DEVELOPMENT_TEAM = F9M2T7SUYF;
 				INFOPLIST_FILE = HMCDManager/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
@@ -335,7 +334,6 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = HMCDManager/HMCDManager.entitlements;
 				DEVELOPMENT_TEAM = F9M2T7SUYF;
 				INFOPLIST_FILE = HMCDManager/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
