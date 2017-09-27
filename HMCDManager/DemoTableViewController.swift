@@ -15,7 +15,7 @@ class DemoTableViewController: UITableViewController {
     
     var people = [NSManagedObject]()
     
-    private var segment:UISegmentedControl = UISegmentedControl.init(items: ["person","group","message"])
+    private var segment:UISegmentedControl = UISegmentedControl.init(items: ["person","group","Msg","Apps","Test"])
     
     let cellIdentifier = "nameCell"
     
@@ -29,8 +29,11 @@ class DemoTableViewController: UITableViewController {
         self.navigationItem.titleView = segment
         
         let clearBt = UIBarButtonItem.init(title: "清除", style: .plain, target: self , action: #selector(self.clearAll))
-        let switchDB = UIBarButtonItem.init(title: "切换数据库", style: .plain, target: self , action: #selector(self.switchDBClick))
+        let switchDB = UIBarButtonItem.init(title: "切换库", style: .plain, target: self , action: #selector(self.switchDBClick))
+        let addBt = UIBarButtonItem.init(title: "+", style: .plain, target: self , action: #selector(self.addName(_:)))
         self.navigationItem.leftBarButtonItems = [clearBt,switchDB]
+        self.navigationItem.rightBarButtonItem = addBt
+        
         
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellIdentifier)
         
@@ -57,7 +60,13 @@ class DemoTableViewController: UITableViewController {
     }
     
     func segmentChange(sender:UISegmentedControl){
-        self.requestAndRelaod()
+        if sender.selectedSegmentIndex == 4{
+            let vc = TestViewController.init()
+            vc.hidesBottomBarWhenPushed = true
+            self.navigationController?.pushViewController(vc, animated: true)
+        }else{
+            self.requestAndRelaod()
+        }
     }
     
     // MARK: - Table view data source
@@ -83,7 +92,9 @@ class DemoTableViewController: UITableViewController {
         }else if let group:Group = obj as? Group{
             cell.textLabel?.text = "group name:\(group.name!)  id:\(group.id)"
         }else if let msg:Message = obj as? Message {
-            cell.textLabel?.text = "msg sender:\(msg.senderID)  \(msg.msgContent)"
+            cell.textLabel?.text = "msg \(msg.msgContent) sender:\(msg.senderID)  "
+        }else if let app:APPInfo = obj as? APPInfo {
+            cell.textLabel?.text = "app name:\(app.name) id \(app.appid)"
         }
         return cell
     }
@@ -147,8 +158,10 @@ class DemoTableViewController: UITableViewController {
             self.requestPersonAndReload()
         }else if segment.selectedSegmentIndex == 1 {
             self.requestGroupsAndReload()
-        }else {
+        }else if segment.selectedSegmentIndex == 2 {
             self.requestMessageAndReload()
+        }else if  segment.selectedSegmentIndex == 3 {
+            self.requestAppInfoAndReload()
         }
     }
     
@@ -162,10 +175,28 @@ class DemoTableViewController: UITableViewController {
                     self.tableView.reloadData()
                 }
             })
-        }else {
+        }else if segment.selectedSegmentIndex == 1{
             Group.db_deleteAll(complettion: { (error) in
                 if error != nil {
                     print("delete groups error :\(error!)")
+                }else{
+                    self.people.removeAll()
+                    self.tableView.reloadData()
+                }
+            })
+        }else if segment.selectedSegmentIndex == 2{
+            Message.db_deleteAll(complettion: { (error) in
+                if error != nil {
+                    print("delete messages error :\(error!)")
+                }else{
+                    self.people.removeAll()
+                    self.tableView.reloadData()
+                }
+            })
+        }else if segment.selectedSegmentIndex == 3{
+            APPInfo.db_deleteAll(complettion: { (error) in
+                if error != nil {
+                    print("delete apps error :\(error!)")
                 }else{
                     self.people.removeAll()
                     self.tableView.reloadData()
@@ -203,6 +234,15 @@ class DemoTableViewController: UITableViewController {
             print("request Message error :\(error)")
         })
     }
+    private func requestAppInfoAndReload(){
+        
+        APPInfo.db_query(predicate: nil , sortBy: nil, sortAscending: true , offset: 0, limitCount: 0, success: { (objs) in
+            self.people = objs
+            self.tableView.reloadData()
+        }, failure: { (error ) in
+            print("request appinfo error :\(error)")
+        })
+    }
     
     @IBAction func addName(_ sender: Any) {
         let alert = UIAlertController(title: "添加姓名", message: "请输入一个名字", preferredStyle: .alert)
@@ -218,7 +258,7 @@ class DemoTableViewController: UITableViewController {
                 
                 if let group:Group = Group.newObj() as? Group{
                     group.id = 3
-                    group.name = textField.text ?? "default group name "
+                    group.name = textField.text ?? "default  name "
                     group.detail = "detail "
                     
                     group.db_update(completion: { (error) in
@@ -233,7 +273,7 @@ class DemoTableViewController: UITableViewController {
                 }
             }else if self.segment.selectedSegmentIndex == 0 {
                 if let pers:Person = Person.newObj() as? Person{
-                    pers.name = textField.text ?? "defailt person name"
+                    pers.name = textField.text ?? "defailt  name"
                     
                     pers.db_update(completion: { (error) in
                         if error == nil  {
@@ -244,15 +284,29 @@ class DemoTableViewController: UITableViewController {
                         }
                     })
                 }
-            }else {
+            }else if self.segment.selectedSegmentIndex == 2 {
                 if let msg:Message = Message.newObj() as? Message{
-                    msg.msgContent = textField.text ?? "defailt person name"
+                    msg.msgContent = textField.text ?? "defailt  name"
                     msg.msgID  = 333
                     msg.senderID = "sender3243"
                     
                     msg.db_update(completion: { (error) in
                         if error == nil  {
                             self.people.append(msg)
+                            self.tableView.reloadData()
+                        }else{
+                            print("add group name failure:\(error!)")
+                        }
+                    })
+                }
+            }else if self.segment.selectedSegmentIndex == 3 {
+                if let app:APPInfo = APPInfo.newObj() as? APPInfo{
+                    
+                    app.appid = Int16(arc4random()%UInt32(1000))
+                    app.name = textField.text ?? "defailt  name"
+                    app.db_update(completion: { (error) in
+                        if error == nil  {
+                            self.people.append(app)
                             self.tableView.reloadData()
                         }else{
                             print("add group name failure:\(error!)")

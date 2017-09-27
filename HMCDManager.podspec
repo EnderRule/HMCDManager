@@ -10,7 +10,7 @@ Pod::Spec.new do |s|
 
   s.name         = "HMCDManager"
   s.version      = "0.0.1"
-  s.summary      = "A short description of HMCDManager."
+  s.summary      = " HMCDManager.Easy way to handling coredata in swift."
 
 
     s.homepage     = "https://github.com/EnderRule/HMCDManager"
@@ -35,7 +35,7 @@ Pod::Spec.new do |s|
   s.source       = { :git => "https://github.com/EnderRule/HMCDManager.git", :tag => "#{s.version}" }
 
 
-  s.source_files  = "Classes", "Classes/**/*.{swift}"
+  s.source_files  = "HMCDManager/Classes", "HMCDManager/Classes/**/*.{swift}"
   # s.exclude_files = "Classes/Exclude"
   # s.public_header_files = "Classes/**/*.h"
   # s.resource  = "icon.png"

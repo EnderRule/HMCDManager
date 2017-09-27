@@ -13,8 +13,6 @@ import CoreData
 class HMCDManager: NSObject {
     static let shared = HMCDManager()
     
-    var coreDataModelNames:[String] = []
-    
     var userDBName:String = ""{
         didSet{
             //dbName变化时，重置 相关项目
@@ -26,7 +24,11 @@ class HMCDManager: NSObject {
     open var dbPathUrl:URL{
         get{
             let homeURL:NSURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first! as NSURL
-            let path:URL =  homeURL.appendingPathComponent("HMCDManager\(userDBName).db", isDirectory: true )!
+            let version:String = self.objectModel.versionIdentifiers.first as? String ?? ""
+//            let set:Set = Set.init("","")
+            
+//            let versions = (self.objectModel.versionIdentifiers.reversed() as? [String] ?? [])
+            let path:URL =  homeURL.appendingPathComponent("HMCDManager\(userDBName)_V\(version).db", isDirectory: true )!
             return path
         }
     }
@@ -65,10 +67,7 @@ class HMCDManager: NSObject {
             if self.s_objectModel != nil {
                 return self.s_objectModel!
             }else {
-                if let filepath = Bundle.main.url(forResource: self.coreDataModelNames.first!, withExtension: "xcdatamodeld"){
-                    self.s_objectModel = NSManagedObjectModel.init(contentsOf: filepath)
-                }
-                self.s_objectModel = NSManagedObjectModel.mergedModel(from: nil )
+                self.s_objectModel = NSManagedObjectModel.mergedModel(from: [Bundle.main] )  //合并所有 model
                 return self.s_objectModel!
             }
         }
