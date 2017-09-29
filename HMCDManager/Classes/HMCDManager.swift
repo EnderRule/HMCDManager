@@ -24,11 +24,9 @@ class HMCDManager: NSObject {
     open var dbPathUrl:URL{
         get{
             let homeURL:NSURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first! as NSURL
-            let version:String = self.objectModel.versionIdentifiers.first as? String ?? ""
-//            let set:Set = Set.init("","")
-            
+//            let version:String = self.objectModel.versionIdentifiers.first as? String ?? ""
 //            let versions = (self.objectModel.versionIdentifiers.reversed() as? [String] ?? [])
-            let path:URL =  homeURL.appendingPathComponent("HMCDManager\(userDBName)_V\(version).db", isDirectory: true )!
+            let path:URL =  homeURL.appendingPathComponent("HMCDManager\(userDBName).db", isDirectory: true )!
             return path
         }
     }
@@ -82,7 +80,14 @@ class HMCDManager: NSObject {
             self.s_storeCoordinator =  NSPersistentStoreCoordinator.init(managedObjectModel: self.objectModel)
             
             do{
-                try self.s_storeCoordinator?.addPersistentStore(ofType:NSSQLiteStoreType, configurationName: nil , at: self.dbPathUrl, options: nil )
+
+                let options:[AnyHashable:Any] = [NSSQLitePragmasOption:["journal_mode":"DELETE"],NSMigratePersistentStoresAutomaticallyOption:true,NSInferMappingModelAutomaticallyOption:true] //轻量级数据自动迁移
+//                @{
+//                    NSSQLitePragmasOption: @{@"journal_mode": @"DELETE"},
+//                    NSMigratePersistentStoresAutomaticallyOption :@YES,
+//                    NSInferMappingModelAutomaticallyOption:@YES
+//                };
+                try self.s_storeCoordinator?.addPersistentStore(ofType:NSSQLiteStoreType, configurationName: nil , at: self.dbPathUrl, options: options )
             }catch{
                 print("add PersistentStore failure \(error.localizedDescription)")
             }
