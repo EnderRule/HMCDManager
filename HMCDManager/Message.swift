@@ -16,5 +16,7 @@ class Message: NSManagedObject {
     @NSManaged var senderID:String
     @NSManaged var msgContent:String
  
+    var fff:Int = 333
     
+    let primaryKeyName:String = "msgID"
 }

@@ -19,6 +19,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
 //        APPInfo.runTest()
         
+        
+        HMCDManager.shared.userDBName = ""
+        
+        let testobj = Message.newNotInertObj() as! Message
+        debugPrint(  testobj.getThePrimaryKeyName(),testobj.getThePrimaryKeyName().characters.count )
+        
+        
+        
+        
         let rootVC = UINavigationController.init(rootViewController: DemoTableViewController.init())
         
         self.window = UIWindow.init(frame: UIScreen.main.bounds)

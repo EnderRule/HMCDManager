@@ -37,6 +37,13 @@ class DemoTableViewController: UITableViewController {
         
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellIdentifier)
         
+        let msg = Message.newObj() as! Message
+//        msg.msgID = 3342
+ //       msg.db_update(completion: nil )
+        msg.db_update(values: ["msgID":3342], success: { (obj ) in
+            
+        }, failure: nil)
+        
     }
     
     override func didReceiveMemoryWarning() {
@@ -92,7 +99,7 @@ class DemoTableViewController: UITableViewController {
         }else if let group:Group = obj as? Group{
             cell.textLabel?.text = "group name:\(group.name!)  id:\(group.id)"
         }else if let msg:Message = obj as? Message {
-            cell.textLabel?.text = "msg \(msg.msgContent) sender:\(msg.senderID)  "
+            cell.textLabel?.text = "msg id \(msg.msgID) \(msg.msgContent) sender:\(msg.senderID)  "
         }else if let app:APPInfo = obj as? APPInfo {
             cell.textLabel?.text = "app name:\(app.name) id \(app.appid)"
         }
@@ -226,7 +233,8 @@ class DemoTableViewController: UITableViewController {
     }
     
     private func requestMessageAndReload(){
-        
+        let predicate:NSPredicate = NSPredicate.init(format: "senderID = %@ AND msgContent = %@", argumentArray: ["sender3243","hhhjj"])
+
         Message.db_query(predicate: nil , sortBy: nil, sortAscending: true , offset: 0, limitCount: 0, success: { (objs) in
             self.people = objs
             self.tableView.reloadData()
