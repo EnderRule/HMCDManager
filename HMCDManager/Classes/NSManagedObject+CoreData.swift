@@ -57,7 +57,8 @@ extension  NSManagedObject {
     
     class func newNotInertObj()->NSManagedObject{
         let obj = NSEntityDescription.insertNewObject(forEntityName: "\(self)", into: HMCDManager.shared.context)
-        HMCDManager.shared.context.delete(obj)
+        obj.db_delete(complettion: nil)
+        
         return obj
     }
     
@@ -93,21 +94,27 @@ extension  NSManagedObject {
     
     
     @objc func db_add(values:[String:Any],success:((NSManagedObject)->Void)?, failure:((String)->Void)?){
-        
-        
-        HMCDManager.shared.add(entity: self , values: values, success: { (obj ) in
-            success?(obj)
-        }) { (error ) in
-            failure?(error)
+        //如果主键已存在，插入后将旧的object删除
+        if let exist :NSManagedObject = self.classForCoder.checkUnique(obj: self , values: nil ){
+            debugPrint("HMCDLog: has exist obj with primarykey value :",exist.value(forKey: exist.getThePrimaryKeyName())!,"will be replace")
+            
+            HMCDManager.shared.add(entity: self , values: values, success: { (obj ) in
+                success?(obj)
+                exist.db_delete(complettion: nil)
+            }) { (error ) in
+                failure?(error)
+            }
+        }else{
+            HMCDManager.shared.add(entity: self , values: values, success: { (obj ) in
+                success?(obj)
+            }) { (error ) in
+                failure?(error)
+            }
         }
     }
     
     
     @objc func db_update(completion:((String?)->Void)?){
-        
-        if let exist :NSManagedObject = self.classForCoder.checkUnique(obj: self , values: nil ){
-            debugPrint("has exist obj with primarykey value 1: ",exist.value(forKey: exist.getThePrimaryKeyName())!)
-        }
         
         HMCDManager.shared.update(entity: self , values: nil, success: { (obj ) in
             completion?(nil)
@@ -117,9 +124,6 @@ extension  NSManagedObject {
     }
     
     @objc func db_update(values:[String:Any],success:((NSManagedObject)->Void)?, failure:((String)->Void)?){
-        if let exist :NSManagedObject = self.classForCoder.checkUnique(obj: self , values: nil ){
-            debugPrint("has exist obj with primarykey value 2: ",exist.value(forKey: exist.getThePrimaryKeyName())!)
-        }
         
         HMCDManager.shared.update(entity: self , values: values, success: { (obj ) in
             success?(obj)

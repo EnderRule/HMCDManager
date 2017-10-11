@@ -15,7 +15,8 @@ class HMCDManager: NSObject {
     
     var userDBName:String = ""{
         didSet{
-            //dbName变化时，重置 相关项目
+            //dbName变化时，保存当前修改 并重置相关项目
+            let _ = self.saveContext()
             self.s_objectModel = nil
             self.s_objectContext = nil
             self.s_storeCoordinator = nil
@@ -327,8 +328,6 @@ class MySortor: NSSortDescriptor{
             result = .orderedAscending
         }else {
             result = str1.compare(str2)
-            
-            
         }
         
         

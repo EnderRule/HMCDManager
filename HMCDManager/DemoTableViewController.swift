@@ -37,13 +37,6 @@ class DemoTableViewController: UITableViewController {
         
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellIdentifier)
         
-        let msg = Message.newObj() as! Message
-//        msg.msgID = 3342
- //       msg.db_update(completion: nil )
-        msg.db_update(values: ["msgID":3342], success: { (obj ) in
-            
-        }, failure: nil)
-        
     }
     
     override func didReceiveMemoryWarning() {
@@ -233,9 +226,9 @@ class DemoTableViewController: UITableViewController {
     }
     
     private func requestMessageAndReload(){
-        let predicate:NSPredicate = NSPredicate.init(format: "senderID = %@ AND msgContent = %@", argumentArray: ["sender3243","hhhjj"])
+        let predicate:NSPredicate = NSPredicate.init(format: "msgID == %@", argumentArray: [333])
 
-        Message.db_query(predicate: nil , sortBy: nil, sortAscending: true , offset: 0, limitCount: 0, success: { (objs) in
+        Message.db_query(predicate: predicate , sortBy: "msgContent", sortAscending: false , offset: 0, limitCount: 0, success: { (objs) in
             self.people = objs
             self.tableView.reloadData()
         }, failure: { (error ) in
