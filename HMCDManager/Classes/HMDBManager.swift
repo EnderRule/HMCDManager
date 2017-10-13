@@ -13,10 +13,10 @@ import Foundation
 
 //import fm
 import FMDB
-import FMDB_Model
+
 
 extension NSObject{
-    class func newObjFor(subCls:AnyClass) ->NSObject{
+    class func newObjFor(subCls:AnyClass) ->AnyObject{
         
         return  (subCls as! NSObject.Type).init()
     }
@@ -30,8 +30,12 @@ class HMDBManager: NSObject {
     
     var modelClasses:[AnyClass] = []
     
-     var dataBaseQueue:FMDatabaseQueue!
-     var dataBase:FMDatabase!
+    var classPropertyInfos:[String:[String:String]] = [:]
+    var tableFieldInfos:[String:[String:String]] = [:]
+    var tablePrimaryKeyName:[String:String] = [:]
+    
+    var dataBaseQueue:FMDatabaseQueue!
+    var dataBase:FMDatabase!
     
     func setDBModelClasses(classes:[AnyClass]){
         self.modelClasses.removeAll()
@@ -109,10 +113,10 @@ class HMDBManager: NSObject {
     func createTables() {
         
         for cls in self.modelClasses{
-            let tableName:String = "\(cls.class())"
-            if !dataBase.tableExists(tableName){
+//            let tableName:String = "\(cls.class())"
+//            if !dataBase.tableExists(tableName){
                 let _ = self.createTableFor(cls: cls)
-            }
+//            }
         }
     }
     func createTableFor(cls:AnyClass)->Bool{
@@ -136,6 +140,8 @@ class HMDBManager: NSObject {
         dataBase.shouldCacheStatements = true
         return dataBase.executeUpdate("delete from %@", withArgumentsIn: [name])
     }
+    
+    
     
 }
 

@@ -12,18 +12,20 @@ import UIKit
     func dbFields()->[String]
     func dbPrimaryKey()->String?
     
-    @objc optional func valueHaveChangedForKeys()->[String]
-    @objc optional func changedValueHaveSaved()
+//    @objc optional func valueHaveChangedForKeys()->[String]
+//    @objc optional func changedValueHaveSaved()
 }
 
-var classPropertyInfos:[String:[String:String]] = [:]
-var tableFieldInfos:[String:[String:String]] = [:]
-var tablePrimaryKeyName:[String:String] = [:]
+
 
 extension NSObject {
     
     static private var kdefaultPK =  "HMDBdefaultPK"
     static private var kisExistInDB =  "HMDBisExistInDB"
+    
+    class var tableName:String{
+        return "\(self.classForCoder())"
+    }
     
     private var defaultPK:Int{
         get{
@@ -45,11 +47,11 @@ extension NSObject {
     
     class func sqlOfCreateTable(cls:AnyClass)->String{
         
-//        let cls:AnyClass = self.classForCoder
         let tableName:String = "\(cls)"
         var colums:String = ""
-        
-        if let obj:HMDBModelDelegate = self as? HMDBModelDelegate{
+    
+        if let obj = (cls as! NSObject.Type).init() as? HMDBModelDelegate {
+            
             let storeFields = obj.dbFields()
             let primaryKey = obj.dbPrimaryKey() ?? ""
             
@@ -78,17 +80,15 @@ extension NSObject {
                     }else if rawType == "T@\"NSString\"" || rawType == "T@\"NSMutableString\""{
                         sqlType = "text"
                     }else if rawType == "T@\"NSArray\"" || rawType == "T@\"NSMutableArray\""{
-                        debugPrint("database not surport for array type of \(field)")
-                        
+                        sqlType = "text"
                     }else if rawType == "T@\"NSDictionary\"" || rawType == "T@\"NSMutableDictionary\""{
-                        debugPrint("database not surport for dictionary type of \(field)")
-                        
+                        sqlType = "text"
                     }else if rawType == "T@\"NSNumber\"" {
                         sqlType = "double"
                     }else if rawType == "TB"  {
                         sqlType = "integer"
                     }else if rawType == "T@\"NSDate\""{
-                        sqlType = "date"
+                        sqlType = "double"
                     }else if rawType == "T@\"NSData\"" || rawType == "T@\"NSMutableData\""{
                         sqlType = "text"
                     }else if rawType.contains("NSURL"){
@@ -97,11 +97,13 @@ extension NSObject {
                         debugPrint("database not surport for type of \(field)")
                     }
                     
+//                    debugPrint("sql field ",field,sqlType,rawType)
+                    
                     if sqlType.characters.count > 0 {
                         if primaryKey == field{
                             colums.append("\(field) \(sqlType) primary key,")
                             
-                            tablePrimaryKeyName.updateValue(field, forKey: tableName)
+                            HMDBManager.shared.tablePrimaryKeyName.updateValue(field, forKey: tableName)
                         }else{
                             colums.append("\(field) \(sqlType),")
                         }
@@ -112,16 +114,18 @@ extension NSObject {
                 
                 if primaryKey.characters.count == 0 {
                     colums.append("defaultPK integer primary key")
-                    tablePrimaryKeyName.updateValue("defaultPK", forKey: tableName)
+                    HMDBManager.shared.tablePrimaryKeyName.updateValue("defaultPK", forKey: tableName)
                 }
                 
-                tableFieldInfos.updateValue(realDbFields, forKey: tableName)
-                classPropertyInfos.updateValue(classPropertyTypes, forKey: tableName)
+                HMDBManager.shared.tableFieldInfos.updateValue(realDbFields, forKey: tableName)
+                HMDBManager.shared.classPropertyInfos.updateValue(classPropertyTypes, forKey: tableName)
             }
             
             if colums.hasSuffix(","){
                 colums = (colums as NSString).substring(to: colums.characters.count - 1)
             }
+        }else{
+            debugPrint("class \(cls) is not in db handled ")
         }
         
         if colums.characters.count == 0 {
@@ -132,11 +136,11 @@ extension NSObject {
     }
     
     
-    public convenience init(primaryKey:Any?){
+    public convenience init(primaryKey:Any,createIfNoneExist:Bool){
         self.init()
         let tableName:String = "\(self.classForCoder)"
-        let primaryKey:String = tablePrimaryKeyName[tableName] ?? ""
-        let pkvalue = NSObject.serialized(value: primaryKey) ?? ""
+        let primaryKey:String = HMDBManager.shared.tablePrimaryKeyName[tableName] ?? ""
+        let pkvalue = NSObject.serialized(value: primaryKey)
         let sql = "select * from \"\(tableName)\" where \"\(primaryKey)\" = ?"
         
         var fieldValues:[AnyHashable:Any ] = [primaryKey:pkvalue]
@@ -152,39 +156,136 @@ extension NSObject {
         self.setValuesWith(fieldValues: fieldValues)
     }
     
-    func setValuesWith(fieldValues:[AnyHashable:Any]){
+    @objc func setValuesWith(fieldValues:[AnyHashable:Any]){
         let tableName:String = "\(self.classForCoder)"
 
-        let fields:[String:String] = tableFieldInfos[tableName] ?? [:]
+        let fields:[String:String] = HMDBManager.shared.tableFieldInfos[tableName] ?? [:]
         for obj in fieldValues{
             if fields[obj.key as? String ?? ""]?.characters.count ?? 0 > 0 {
                 self.decode(dbValue: obj.value, forkey: obj.key as! String)
             }
         }
     }
-    
-    func dbAdd(completion:((Bool)->Void)){
-        
+     
+    @objc func dbAdd(completion:@escaping ((Bool)->Void)){
+        self.dbSave(insert: true , completion: completion)
     }
-    func dbUpdate(completion:((Bool)->Void)){
-        
+    @objc func dbUpdate(completion:@escaping ((Bool)->Void)){
+        self.dbSave(insert: false , completion: completion)
     }
     
-    func dbSave(completion:((Bool)->Void)){
+    @objc func dbSave(completion:@escaping ((Bool)->Void)){
+        self.dbSave(insert: nil , completion: completion)
+    }
+    
+    private func dbSave(insert:Bool? ,completion:((Bool)->Void)?){
         
+        let tableName:String = "\(self.classForCoder)"
+        let primaryKey = (self as! HMDBModelDelegate).dbPrimaryKey() ?? "defaultPK"
+
+
+
+        var dbvalues:[Any] = []
+        
+        var fields:[String] = ((HMDBManager.shared.tableFieldInfos[tableName] ?? [:]) as NSDictionary).allKeys as? [String] ?? []
+        for field in fields{
+            let dbvalue = self.encodeValueFor(key: field) // NSObject.serialized(value: self.value(forKey: field) ?? "")
+            dbvalues.append(dbvalue)
+        }
+        if !fields.contains(primaryKey){
+            fields.append(primaryKey)
+            dbvalues.append(self.defaultPK)
+        }
+        
+        if self.isExistInDB{
+        
+        
+        }else{
+            
+            var action:String = ""
+            if insert == nil {
+                action = "insert or replace"
+            }else if insert!{
+                action = "insert"
+            }else{
+                action = "replace"
+            }
+            
+            let columns = (fields as NSArray).componentsJoined(by: "\",\"")
+            var valuesHolders = ("" as NSString).padding(toLength: fields.count * 2, withPad: "?,", startingAt: 0)
+            valuesHolders = (valuesHolders as NSString).substring(to: valuesHolders.characters.count - 1)
+            let sql:String = "\(action) into \"\(tableName)\" (\"\(columns)\") values (\(valuesHolders))"
+            
+            debugPrint("db save sql:\(sql) values:\(dbvalues)")
+            
+            let result = HMDBManager.shared.dataBase.executeUpdate(sql , withArgumentsIn: dbvalues)
+            
+            completion?(result)
+        }
+    }
+    
+    @objc func dbDelete(completion:((Bool)->Void)?){
+        let tableName:String = "\(self.classForCoder)"
+        let primaryKey = (self as! HMDBModelDelegate).dbPrimaryKey() ?? "defaultPK"
+        let primaryValue = primaryKey == "defaultPK" ? self.defaultPK : self.encodeValueFor(key: primaryKey)
+        let sql = "delete from \(tableName) where \(primaryKey) = \(primaryValue) "
+       
+        debugPrint("db delete sql:\(sql) ")
+        completion?( HMDBManager.shared.dataBase.executeStatements(sql))
+    }
+    
+    /// query
+    ///
+    /// - Parameters:
+    ///   - whereStr: example: objid = 33  or name like "myname"
+    ///   - orderFields: example: objid desc
+    ///   - offset: default 0
+    ///   - limitCount: default 0
+    /// - Returns: entity objs as array
+    @objc class func dbQuery(whereStr:String?,orderFields:String?,offset:Int,limit:Int,args:[Any],completion:@escaping (([Any],Error?)->Void)){
+        let tableName:String = "\(self.classForCoder())"
+
+        var sql:String = "select * from \(tableName) "
+        if whereStr?.characters.count ?? 0 > 0 {
+            sql.append(" where \(whereStr!) ")
+        }
+        if orderFields?.characters.count ?? 0 > 0{
+            sql.append(" order by \(orderFields!) ")
+        }
+        if offset > 0 {
+            sql.append(" offset \(offset) ")
+        }
+        if limit > 0 {
+            sql.append(" limit \(limit) ")
+        }
+        
+        debugPrint("db query sql:\(sql)")
+        
+        let rs =  HMDBManager.shared.dataBase.executeQuery(sql , withArgumentsIn: args)
+        if rs != nil  {
+            var objs:[AnyObject] = []
+            while rs!.next() {
+                let obj = (self.classForCoder() as! NSObject.Type).init()
+                obj.setValuesWith(fieldValues: rs!.resultDictionary ?? [:])
+                objs.append(obj)
+            }
+            completion(objs,nil)
+        }else{
+            completion([],HMDBManager.shared.dataBase.lastError())
+        }
     }
     
 
-    func encodeValueFor(key:String)->Any?{
-        return NSObject.serialized(value:self.value(forKey: key))
+    private func encodeValueFor(key:String)->Any{
+        return NSObject.serialized(value:self.value(forKey: key) ?? "")
     }
     
-    func decode(dbValue:Any?,forkey:String){
+    private func decode(dbValue:Any,forkey:String){
         let value = NSObject.unserialized(dbvalue: dbValue , propertyName: forkey)
         self.setValue(value , forKey: forkey)
     }
     
-    class func serialized(value:Any?)->Any?{
+    class func serialized(value:Any)->Any{
         if let array = value as? [Any]{
             do{
                 let data = try JSONSerialization.data(withJSONObject: array, options: .init(rawValue: 0))
@@ -212,9 +313,9 @@ extension NSObject {
         
         return value
     }
-    class func unserialized(dbvalue:Any?,propertyName:String)->Any?{
+    class func unserialized(dbvalue:Any,propertyName:String)->Any{
         let tablename = "\(self.classForCoder())"
-        let classPropertys = classPropertyInfos[tablename] ?? [:]
+        let classPropertys = HMDBManager.shared.classPropertyInfos[tablename] ?? [:]
         let type = classPropertys[propertyName] ?? ""
         if type.contains("NSArray")
             || type.contains("NSMutableArray")
@@ -261,6 +362,9 @@ extension NSObject {
             let str = dbvalue as? String ?? ""
             return URL.init(string: str)!
         }
+        if ((dbvalue as? NSNull) != nil)  {
+            return ""
+        }
         return dbvalue
     } 
     
@@ -273,3 +377,9 @@ extension NSObject {
     
     
 }
+
+
+
+
+
+

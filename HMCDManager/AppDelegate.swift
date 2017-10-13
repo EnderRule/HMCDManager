@@ -22,8 +22,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         HMCDManager.shared.userDBName = ""
         
-        let testobj = Message.newNotInertObj() as! Message
-        debugPrint(  testobj.getThePrimaryKeyName(),testobj.getThePrimaryKeyName().characters.count )
+//        let testobj = Message.newNotInertObj() as! Message
+//        debugPrint(  testobj.getThePrimaryKeyName(),testobj.getThePrimaryKeyName().characters.count )
         
 //        if let message:Message =  NSObject.newObjFor(subCls: Message.classForCoder()) as? Message{
 //            message.setobj(str: "fwffsdfsdfsdfsdfs")
@@ -31,10 +31,38 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //            print("new message obj :\(message)  \(message.getobj())")
 //        }
         
-        HMDBManager.shared.modelClasses = [Message.classForCoder()]
+        HMDBManager.shared.modelClasses = [Message.classForCoder(),TestModel.classForCoder(),Model2.classForCoder()]
         HMDBManager.shared.openDB()
         
+        let testModel = TestModel.init()
+        testModel.objID = "31321"
+        testModel.message = "2525353523"
+        testModel.date3 = 44
+//        testModel.dbSave { (success ) in
+//             debugPrint("testmodel save : \(success)")
+//        }
+        testModel.dbDelete { (success ) in
+            debugPrint("testmodel delete : \(success)")
+        }
         
+        let mm = Model2.init()
+        mm.objID = "3r2"
+        
+//        mm.dbUpdate { (succcess) in
+//             debugPrint("mm dbUpdate : \(succcess)")
+//        }
+        mm.dbAdd { (succcess) in
+            debugPrint("mm db add : \(succcess)")
+        }
+        
+        TestModel.dbQuery(whereStr: nil , orderFields: nil , offset: 0, limit: 0, args: []) { (objs , error ) in
+            debugPrint("query resluts :\(objs) \(error?.localizedDescription ?? "")")
+            for obj in objs {
+                if let model = obj as? TestModel{
+                    debugPrint(model.objID,model.message,model.date3)
+                }
+            }
+        }
         
         let rootVC = UINavigationController.init(rootViewController: DemoTableViewController.init())
         

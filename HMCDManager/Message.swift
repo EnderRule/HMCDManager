@@ -35,3 +35,33 @@ class Message: NSManagedObject,HMDBModelDelegate {
    
     
 }
+
+class TestModel:NSObject,HMDBModelDelegate{
+ 
+    var objID:String = ""
+    var message:String = ""
+    var date3:Int = 3 // = NSDate()
+    
+    func dbFields() -> [String] {
+        return ["objID","message","date3"]
+    }
+    func dbPrimaryKey() -> String? {
+        return "objID"
+    }
+    
+//    func dbDeleteFields()->[String]{
+//        return []
+//    }
+}
+
+class Model2:NSObject,HMDBModelDelegate
+{
+    var objID:String = ""
+    
+    func dbFields() -> [String] {
+        return ["objID"]
+    }
+    func dbPrimaryKey() -> String? {
+        return nil
+    }
+}
