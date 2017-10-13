@@ -20,7 +20,6 @@ extension  NSManagedObject {
     @objc public convenience init(myvalues:[String:Any]?){
         self.init()
         
-        
     }
     
 //    var primaryKeyName:String = ""

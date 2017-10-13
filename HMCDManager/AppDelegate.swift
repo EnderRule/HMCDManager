@@ -25,6 +25,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let testobj = Message.newNotInertObj() as! Message
         debugPrint(  testobj.getThePrimaryKeyName(),testobj.getThePrimaryKeyName().characters.count )
         
+//        if let message:Message =  NSObject.newObjFor(subCls: Message.classForCoder()) as? Message{
+//            message.setobj(str: "fwffsdfsdfsdfsdfs")
+//            
+//            print("new message obj :\(message)  \(message.getobj())")
+//        }
+        
+        HMDBManager.shared.modelClasses = [Message.classForCoder()]
+        HMDBManager.shared.openDB()
         
         
         

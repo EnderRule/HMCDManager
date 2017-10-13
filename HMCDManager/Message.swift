@@ -10,7 +10,7 @@ import UIKit
 import CoreData
 
 @objc(Message)
-class Message: NSManagedObject {
+class Message: NSManagedObject,HMDBModelDelegate {
     
     @NSManaged var msgID:Int32
     @NSManaged var senderID:String
@@ -19,4 +19,19 @@ class Message: NSManagedObject {
     var fff:Int = 333
     
     let primaryKeyName:String = "msgID"
+    
+    override func didTurnIntoFault() {
+        
+    }
+    
+    func dbFields() -> [String] {
+        return ["msgID","senderID","msgContent"]
+    }
+    
+    func dbPrimaryKey() -> String? {
+        return "msgID"
+    }
+    
+   
+    
 }

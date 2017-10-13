@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		32A0A6FED7209FF434815A45 /* Pods_HMCDManager.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD4C83A5A8B74C5FA1B81B4F /* Pods_HMCDManager.framework */; };
+		664332BA1F8F4098002F7981 /* HMDBManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 664332B91F8F4098002F7981 /* HMDBManager.swift */; };
 		669BC1D71F73979F005B5774 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 669BC1D61F73979F005B5774 /* AppDelegate.swift */; };
 		669BC1DE1F73979F005B5774 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 669BC1DD1F73979F005B5774 /* Assets.xcassets */; };
 		669BC1E11F73979F005B5774 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 669BC1DF1F73979F005B5774 /* LaunchScreen.storyboard */; };
@@ -17,11 +19,14 @@
 		669BC1F91F73C5AC005B5774 /* HMCDManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 669BC1F71F73C5AC005B5774 /* HMCDManager.swift */; };
 		669BC1FA1F73C5AC005B5774 /* NSManagedObject+CoreData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 669BC1F81F73C5AC005B5774 /* NSManagedObject+CoreData.swift */; };
 		66B860421F750B4F005D1FCE /* third.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 66B860401F750B4F005D1FCE /* third.xcdatamodeld */; };
+		66CAE2BE1F8F6F5E0002F28A /* NSObject+Properties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66CAE2BD1F8F6F5E0002F28A /* NSObject+Properties.swift */; };
+		66CAE2C01F8F82A90002F28A /* NSObject+HMDB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66CAE2BF1F8F82A90002F28A /* NSObject+HMDB.swift */; };
 		66DF62381F7B3F5E00BDABC9 /* APPInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 66DF62371F7B3F5E00BDABC9 /* APPInfo.m */; };
 		66DF66EF1F7A2D2A00E59892 /* TestViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 66DF66EE1F7A2D2A00E59892 /* TestViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		664332B91F8F4098002F7981 /* HMDBManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HMDBManager.swift; sourceTree = "<group>"; };
 		669BC1D31F73979F005B5774 /* HMCDManager.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HMCDManager.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		669BC1D61F73979F005B5774 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		669BC1DD1F73979F005B5774 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -35,10 +40,15 @@
 		669BC1F81F73C5AC005B5774 /* NSManagedObject+CoreData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSManagedObject+CoreData.swift"; sourceTree = "<group>"; };
 		66B8603C1F750A8A005D1FCE /* HMCDManager-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "HMCDManager-Bridging-Header.h"; sourceTree = "<group>"; };
 		66B860411F750B4F005D1FCE /* third.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = third.xcdatamodel; sourceTree = "<group>"; };
+		66CAE2BD1F8F6F5E0002F28A /* NSObject+Properties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSObject+Properties.swift"; sourceTree = "<group>"; };
+		66CAE2BF1F8F82A90002F28A /* NSObject+HMDB.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSObject+HMDB.swift"; sourceTree = "<group>"; };
 		66DF62361F7B3F5E00BDABC9 /* APPInfo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = APPInfo.h; sourceTree = "<group>"; };
 		66DF62371F7B3F5E00BDABC9 /* APPInfo.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = APPInfo.m; sourceTree = "<group>"; };
 		66DF66ED1F7A2D2A00E59892 /* TestViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TestViewController.h; sourceTree = "<group>"; };
 		66DF66EE1F7A2D2A00E59892 /* TestViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TestViewController.m; sourceTree = "<group>"; };
+		87F04A4BCFBCF27BCFA2F82B /* Pods-HMCDManager.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HMCDManager.debug.xcconfig"; path = "Pods/Target Support Files/Pods-HMCDManager/Pods-HMCDManager.debug.xcconfig"; sourceTree = "<group>"; };
+		9FA97BB86DE9299BDD616699 /* Pods-HMCDManager.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HMCDManager.release.xcconfig"; path = "Pods/Target Support Files/Pods-HMCDManager/Pods-HMCDManager.release.xcconfig"; sourceTree = "<group>"; };
+		DD4C83A5A8B74C5FA1B81B4F /* Pods_HMCDManager.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HMCDManager.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -46,17 +56,29 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				32A0A6FED7209FF434815A45 /* Pods_HMCDManager.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1E04F0667BB79ECA81661E0A /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				87F04A4BCFBCF27BCFA2F82B /* Pods-HMCDManager.debug.xcconfig */,
+				9FA97BB86DE9299BDD616699 /* Pods-HMCDManager.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 		669BC1CA1F73979F005B5774 = {
 			isa = PBXGroup;
 			children = (
 				669BC1D51F73979F005B5774 /* HMCDManager */,
 				669BC1D41F73979F005B5774 /* Products */,
+				1E04F0667BB79ECA81661E0A /* Pods */,
+				E0D3ED39B8A375CC9036A825 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -94,9 +116,20 @@
 			isa = PBXGroup;
 			children = (
 				669BC1F71F73C5AC005B5774 /* HMCDManager.swift */,
+				664332B91F8F4098002F7981 /* HMDBManager.swift */,
 				669BC1F81F73C5AC005B5774 /* NSManagedObject+CoreData.swift */,
+				66CAE2BD1F8F6F5E0002F28A /* NSObject+Properties.swift */,
+				66CAE2BF1F8F82A90002F28A /* NSObject+HMDB.swift */,
 			);
 			path = Classes;
+			sourceTree = "<group>";
+		};
+		E0D3ED39B8A375CC9036A825 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				DD4C83A5A8B74C5FA1B81B4F /* Pods_HMCDManager.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -106,9 +139,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 669BC1E51F73979F005B5774 /* Build configuration list for PBXNativeTarget "HMCDManager" */;
 			buildPhases = (
+				34272F6743C0EB0354F7A4AA /* [CP] Check Pods Manifest.lock */,
 				669BC1CF1F73979F005B5774 /* Sources */,
 				669BC1D01F73979F005B5774 /* Frameworks */,
 				669BC1D11F73979F005B5774 /* Resources */,
+				A26CF707ADD9FB338B575B61 /* [CP] Embed Pods Frameworks */,
+				3B59624F2AD632826D1D2E21 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -172,6 +208,54 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		34272F6743C0EB0354F7A4AA /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		3B59624F2AD632826D1D2E21 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-HMCDManager/Pods-HMCDManager-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		A26CF707ADD9FB338B575B61 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-HMCDManager/Pods-HMCDManager-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		669BC1CF1F73979F005B5774 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -179,12 +263,15 @@
 			files = (
 				669BC1FA1F73C5AC005B5774 /* NSManagedObject+CoreData.swift in Sources */,
 				66DF62381F7B3F5E00BDABC9 /* APPInfo.m in Sources */,
+				66CAE2C01F8F82A90002F28A /* NSObject+HMDB.swift in Sources */,
 				669BC1F51F73BD4C005B5774 /* second.xcdatamodeld in Sources */,
 				669BC1F01F7398EB005B5774 /* DemoTableViewController.swift in Sources */,
 				66DF66EF1F7A2D2A00E59892 /* TestViewController.m in Sources */,
 				669BC1F21F73AB7D005B5774 /* Message.swift in Sources */,
 				66B860421F750B4F005D1FCE /* third.xcdatamodeld in Sources */,
 				669BC1E91F7397BA005B5774 /* first.xcdatamodel in Sources */,
+				66CAE2BE1F8F6F5E0002F28A /* NSObject+Properties.swift in Sources */,
+				664332BA1F8F4098002F7981 /* HMDBManager.swift in Sources */,
 				669BC1D71F73979F005B5774 /* AppDelegate.swift in Sources */,
 				669BC1F91F73C5AC005B5774 /* HMCDManager.swift in Sources */,
 			);
@@ -313,6 +400,7 @@
 		};
 		669BC1E61F73979F005B5774 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 87F04A4BCFBCF27BCFA2F82B /* Pods-HMCDManager.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -320,7 +408,10 @@
 				INFOPLIST_FILE = HMCDManager/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				OTHER_LDFLAGS = "-ObjC";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = fulladvantage.linking.HMCDManager;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "HMCDManager/HMCDManager-Bridging-Header.h";
@@ -331,6 +422,7 @@
 		};
 		669BC1E71F73979F005B5774 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9FA97BB86DE9299BDD616699 /* Pods-HMCDManager.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -338,7 +430,10 @@
 				INFOPLIST_FILE = HMCDManager/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				OTHER_LDFLAGS = "-ObjC";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = fulladvantage.linking.HMCDManager;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "HMCDManager/HMCDManager-Bridging-Header.h";

@@ -253,6 +253,8 @@ class HMCDManager: NSObject {
     ///   - failure: 查询失败
     @objc func query(myclass:AnyClass,predicate:NSPredicate?,sortBy:String?,sortAscending:Bool,offset:Int,limitCount:Int,success:(([NSManagedObject])->Void), failure:((String)->Void)?){
         
+//        NSFetchedResultsController.init(fetchRequest: <#T##NSFetchRequest<NSFetchRequestResult>#>, managedObjectContext: <#T##NSManagedObjectContext#>, sectionNameKeyPath: <#T##String?#>, cacheName: <#T##String?#>)
+        
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "\(myclass)")
         if offset > 0 {
             fetchRequest.fetchOffset = offset
