@@ -35,15 +35,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         HMDBManager.shared.openDB()
         
         let testModel = TestModel.init()
-        testModel.objID = "31321"
-        testModel.message = "2525353523"
+        testModel.objID = "442"
+        testModel.message = "63222"
         testModel.date3 = 44
-//        testModel.dbSave { (success ) in
-//             debugPrint("testmodel save : \(success)")
-//        }
-        testModel.dbDelete { (success ) in
-            debugPrint("testmodel delete : \(success)")
+        testModel.date1 = Date().addingTimeInterval(-4242342)
+        testModel.dbSave { (success ) in
+             debugPrint("testmodel save : \(success)")
         }
+//        testModel.dbDelete { (success ) in
+//            debugPrint("testmodel delete : \(success)")
+//        }
         
         let mm = Model2.init()
         mm.objID = "3r2"
@@ -59,7 +60,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             debugPrint("query resluts :\(objs) \(error?.localizedDescription ?? "")")
             for obj in objs {
                 if let model = obj as? TestModel{
-                    debugPrint(model.objID,model.message,model.date3)
+                    debugPrint(model.objID,model.message,model.date3,model.date1)
                 }
             }
         }

@@ -45,95 +45,7 @@ extension NSObject {
         }
     }
     
-    class func sqlOfCreateTable(cls:AnyClass)->String{
-        
-        let tableName:String = "\(cls)"
-        var colums:String = ""
     
-        if let obj = (cls as! NSObject.Type).init() as? HMDBModelDelegate {
-            
-            let storeFields = obj.dbFields()
-            let primaryKey = obj.dbPrimaryKey() ?? ""
-            
-            var realDbFields:[String:String] = [:]
-            var classPropertyTypes:[String:String] = [:]
-            
-            let properties = (obj as! NSObject).getAllPropertys(theClass: cls , includeSupers: true )
-            
-            for field in storeFields{
-                
-                if properties.contains(field){
-                    let property = class_getProperty(cls, field)
-                    let attribute = String.init(utf8String: property_getAttributes(property)) ?? "1,1"
-                    
-                    let rawType:String = attribute.components(separatedBy: ",").first!
-                    var sqlType:String = ""
-                    
-                    if rawType == "Tq" || rawType == "Ti" || rawType == "Ts" || rawType == "Tl"{
-                        sqlType = "integer"
-                    }else if rawType == "TQ" || rawType == "TI" || rawType == "TS" || rawType == "TL"{
-                        sqlType = "integer"
-                    }else if rawType == "Tf"{
-                        sqlType = "single"
-                    }else if rawType == "Td"{
-                        sqlType = "double"
-                    }else if rawType == "T@\"NSString\"" || rawType == "T@\"NSMutableString\""{
-                        sqlType = "text"
-                    }else if rawType == "T@\"NSArray\"" || rawType == "T@\"NSMutableArray\""{
-                        sqlType = "text"
-                    }else if rawType == "T@\"NSDictionary\"" || rawType == "T@\"NSMutableDictionary\""{
-                        sqlType = "text"
-                    }else if rawType == "T@\"NSNumber\"" {
-                        sqlType = "double"
-                    }else if rawType == "TB"  {
-                        sqlType = "integer"
-                    }else if rawType == "T@\"NSDate\""{
-                        sqlType = "double"
-                    }else if rawType == "T@\"NSData\"" || rawType == "T@\"NSMutableData\""{
-                        sqlType = "text"
-                    }else if rawType.contains("NSURL"){
-                        sqlType = "text"
-                    }else{
-                        debugPrint("database not surport for type of \(field)")
-                    }
-                    
-//                    debugPrint("sql field ",field,sqlType,rawType)
-                    
-                    if sqlType.characters.count > 0 {
-                        if primaryKey == field{
-                            colums.append("\(field) \(sqlType) primary key,")
-                            
-                            HMDBManager.shared.tablePrimaryKeyName.updateValue(field, forKey: tableName)
-                        }else{
-                            colums.append("\(field) \(sqlType),")
-                        }
-                        realDbFields.updateValue(sqlType, forKey: field)
-                        classPropertyTypes.updateValue(rawType, forKey: field)
-                    }
-                }
-                
-                if primaryKey.characters.count == 0 {
-                    colums.append("defaultPK integer primary key")
-                    HMDBManager.shared.tablePrimaryKeyName.updateValue("defaultPK", forKey: tableName)
-                }
-                
-                HMDBManager.shared.tableFieldInfos.updateValue(realDbFields, forKey: tableName)
-                HMDBManager.shared.classPropertyInfos.updateValue(classPropertyTypes, forKey: tableName)
-            }
-            
-            if colums.hasSuffix(","){
-                colums = (colums as NSString).substring(to: colums.characters.count - 1)
-            }
-        }else{
-            debugPrint("class \(cls) is not in db handled ")
-        }
-        
-        if colums.characters.count == 0 {
-            debugPrint("create table \(tableName) but has no surported dbFields")
-            return ""
-        }
-        return "CREATE TABLE IF NOT EXISTS \(tableName) (\(colums))"
-    }
     
     
     public convenience init(primaryKey:Any,createIfNoneExist:Bool){
@@ -277,12 +189,14 @@ extension NSObject {
     
 
     private func encodeValueFor(key:String)->Any{
-        return NSObject.serialized(value:self.value(forKey: key) ?? "")
+        return self.classForCoder.serialized(value:self.value(forKey: key) ?? "")
     }
     
     private func decode(dbValue:Any,forkey:String){
-        let value = NSObject.unserialized(dbvalue: dbValue , propertyName: forkey)
-        self.setValue(value , forKey: forkey)
+        let value = self.classForCoder.unserialized(dbvalue: dbValue , propertyName: forkey)
+        if (value as? NSNull) == nil {  //不为null 才能设置
+            self.setValue(value , forKey: forkey)
+        }
     }
     
     class func serialized(value:Any)->Any{
@@ -317,6 +231,7 @@ extension NSObject {
         let tablename = "\(self.classForCoder())"
         let classPropertys = HMDBManager.shared.classPropertyInfos[tablename] ?? [:]
         let type = classPropertys[propertyName] ?? ""
+        
         if type.contains("NSArray")
             || type.contains("NSMutableArray")
             || type.contains("NSDictionary")
@@ -361,9 +276,6 @@ extension NSObject {
         }else if type.contains("NSURL"){
             let str = dbvalue as? String ?? ""
             return URL.init(string: str)!
-        }
-        if ((dbvalue as? NSNull) != nil)  {
-            return ""
         }
         return dbvalue
     } 
