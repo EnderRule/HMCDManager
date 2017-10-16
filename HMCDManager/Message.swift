@@ -43,8 +43,12 @@ class TestModel:NSObject,HMDBModelDelegate{
     var date3:Int = 3 // = NSDate()
     var date1:Date = Date.init()
     
+    var info:[String:Any] = [:]
+    var extraObj:[Any] = []
+    var datas:Data?
+    var url:URL?
     func dbFields() -> [String] {
-        return ["objID","message","date3","date1"]
+        return ["objID","message","date3","date1","info","extraObj","datas","url"]
     }
     func dbPrimaryKey() -> String? {
         return "objID"

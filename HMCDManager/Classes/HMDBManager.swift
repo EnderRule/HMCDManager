@@ -40,7 +40,7 @@ class HMDBManager: NSObject {
     var dataBaseQueue:FMDatabaseQueue!
     var dataBase:FMDatabase!
     
-    func addDBModelClasses(cls:AnyClass){
+    func addDBModelClass(cls:AnyClass){
 
         self.modelClasses.append(cls)
         if dataBase.open(){
@@ -117,30 +117,6 @@ class HMDBManager: NSObject {
     }
     
     func createTables() {
-        
-//        int numClasses = objc_getClassList(NULL, 0);
-//        Class *classes = NULL;
-//        classes = (__unsafe_unretained Class *)malloc(sizeof(Class) * numClasses);
-//        numClasses = objc_getClassList(classes, numClasses);
-
-
-        
-        let count:Int32 = objc_getClassList(nil , 0)
-
-        let unsafe =  UnsafeMutablePointer<AnyClass?>.allocate(capacity: Int(count))
-        let buffer:AutoreleasingUnsafeMutablePointer<AnyClass?> = AutoreleasingUnsafeMutablePointer<AnyClass?>.init(unsafe)
-
-        let count2  = objc_getClassList(buffer, count)
-        for index in 0..<count2{
-            
-            if let cls = buffer[Int(index)] {
-            
-                print(cls)
-            }
-        }
-        print("classes count",count2,count)
-        
-        
         for cls in self.modelClasses{
 //            let tableName:String = "\(cls.class())"
 //            if !dataBase.tableExists(tableName){

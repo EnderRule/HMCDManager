@@ -45,8 +45,6 @@ extension NSObject {
     }
     
     
-    
-    
     public convenience init(primaryValue:Any,createIfNoneExist:Bool){
         self.init()
         let tableName:String = "\(self.classForCoder)"
@@ -95,13 +93,15 @@ extension NSObject {
         if rs?.next() ?? false {
             
             let maxPK = rs!.int(forColumn: "defaultPK")
-            disableHMDBLog ? () : debugPrint("max defaultPK of \(tableName) \(maxPK) ")
+            disableHMDBLog ? () : debugPrint("HMDB max defaultPK of \(tableName) \(maxPK) ")
             rs?.close()
             return Int(maxPK)
         }else{
             return 0
         }
     }
+    
+    //MARK:增删改查
     @objc func dbAdd(completion: ((Bool)->Void)?){
         self.dbSave(insert: true , completion: completion)
     }
@@ -158,10 +158,12 @@ extension NSObject {
         valuesHolders = (valuesHolders as NSString).substring(to: valuesHolders.characters.count - 1)
         let sql:String = "\(action) into \"\(tableName)\" (\"\(columns)\") values (\(valuesHolders))"
         
-        disableHMDBLog ? () : debugPrint("db save sql:\(sql) values:\(dbvalues)")
+        disableHMDBLog ? () : debugPrint("HMDB  save sql:\(sql) values:\(dbvalues)")
         
         let result = HMDBManager.shared.dataBase.executeUpdate(sql , withArgumentsIn: dbvalues)
-        
+        if result{
+            self.isExistInDB = true
+        }
         completion?(result)
         
     }
@@ -172,7 +174,7 @@ extension NSObject {
         let primaryValue = primaryKey == "defaultPK" ? self.defaultPK : self.encodeValueFor(key: primaryKey)
         let sql = "delete from \(tableName) where \(primaryKey) = \(primaryValue) "
        
-        disableHMDBLog ? () : debugPrint("db delete sql:\(sql) ")
+        disableHMDBLog ? () : debugPrint("HMDB  delete sql:\(sql) ")
         completion?( HMDBManager.shared.dataBase.executeStatements(sql))
     }
     
@@ -180,7 +182,7 @@ extension NSObject {
     ///
     /// - Parameters:
     ///   - whereStr: example: objid = 33  or name like "myname"
-    ///   - orderFields: example: objid desc
+    ///   - orderFields: example: objid desc,content asce
     ///   - offset: default 0
     ///   - limitCount: default 0
     /// - Returns: entity objs as array
@@ -217,7 +219,7 @@ extension NSObject {
         }
     }
     
-
+    //MARK:赋值取值、值的序列化与反序列化
     private func encodeValueFor(key:String)->Any{
         return self.classForCoder.serialized(value:self.value(forKey: key) ?? "")
     }
@@ -236,7 +238,7 @@ extension NSObject {
                 
                 return self.stringFrom(data: data)
             }catch{
-                disableHMDBLog ? () : debugPrint("can not serialized for array value:\(String(describing: value))")
+                disableHMDBLog ? () : debugPrint("HMDB can not serialized for array value:\(String(describing: value))")
                 return ""
             }
         }else if let dic = value as? [AnyHashable:Any]{
@@ -244,7 +246,7 @@ extension NSObject {
                 let data = try JSONSerialization.data(withJSONObject: dic, options: .init(rawValue: 0))
                 return self.stringFrom(data: data)
             }catch{
-                disableHMDBLog ? () : debugPrint("can not serialized for dictionary value:\(String(describing: value))")
+                disableHMDBLog ? () : debugPrint("HMDB can not serialized for dictionary value:\(String(describing: value))")
                 return ""
             }
         }else if let url = value as? URL {
@@ -282,7 +284,7 @@ extension NSObject {
                     return NSMutableDictionary.init(dictionary: obj as? [AnyHashable:Any] ?? [:])
                 }
             }catch{
-                disableHMDBLog ? () : debugPrint("can not unserialized for value:\(String(describing: dbvalue))")
+                disableHMDBLog ? () : debugPrint("HMDB can not unserialized for value:\(String(describing: dbvalue))")
                 if type.contains("NSArray"){
                     return []
                 }else if type.contains("NSMutableArray"){
@@ -305,7 +307,9 @@ extension NSObject {
             }
         }else if type.contains("NSURL"){
             let str = dbvalue as? String ?? ""
-            return URL.init(string: str)!
+            if let url = URL.init(string: str){
+                return url
+            }
         }
         return dbvalue
     } 
