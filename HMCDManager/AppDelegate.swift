@@ -60,11 +60,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //            debugPrint("mm db add : \(succcess)")
 //        }
         
-        TestModel.dbQuery(whereStr: nil , orderFields: nil , offset: 0, limit: 0, args: []) { (objs , error ) in
+        TestModel.dbQuery(whereStr: nil , orderFields: "objID asc" , offset: 0, limit: 0, args: []) { (objs , error ) in
             debugPrint("TestModel query resluts :\(objs.count) \(error?.localizedDescription ?? "")")
             for obj in objs {
                 if let model = obj as? TestModel{
-                    debugPrint(model.objID,model.message,model.date3,model.date1,model.info,model.extraObj,String.init(data: model.datas ?? Data() , encoding: .utf8),model.url )
+                    debugPrint(model.objID,model.message,model.date3,model.date1,String.init(data: model.datas ?? Data() , encoding: .utf8),model.url )
                 }
             }
         }

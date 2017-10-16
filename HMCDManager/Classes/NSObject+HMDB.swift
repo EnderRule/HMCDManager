@@ -196,9 +196,9 @@ extension NSObject {
         if orderFields?.characters.count ?? 0 > 0{
             sql.append(" order by \(orderFields!) ")
         }
-        
-        sql.append(" limit \(offset),\(limit) ")
-        
+        if offset > 0 || limit > 0 {
+            sql.append(" limit \(offset),\(limit) ")
+        }
         disableHMDBLog ? () : debugPrint("db query sql:\(sql)")
         
         let rs =  HMDBManager.shared.dataBase.executeQuery(sql , withArgumentsIn: args)
