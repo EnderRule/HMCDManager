@@ -35,7 +35,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         HMDBManager.shared.openDB()
         
         let testModel = TestModel.init()
-        testModel.objID = "442"
+        testModel.objID = "7973212"
         testModel.message = "63222"
         testModel.date3 = 44
         testModel.date1 = Date().addingTimeInterval(-4242342)
@@ -46,25 +46,32 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //            debugPrint("testmodel delete : \(success)")
 //        }
         
-        let mm = Model2.init()
-        mm.objID = "3r2"
-        
+//        let mm:Model2 = Model2.init(primaryValue:67,createIfNoneExist:false)
+//        mm.objID = "f3r32r236666"
+//        
 //        mm.dbUpdate { (succcess) in
 //             debugPrint("mm dbUpdate : \(succcess)")
 //        }
-        mm.dbAdd { (succcess) in
-            debugPrint("mm db add : \(succcess)")
-        }
+//        mm.dbAdd { (succcess) in
+//            debugPrint("mm db add : \(succcess)")
+//        }
         
         TestModel.dbQuery(whereStr: nil , orderFields: nil , offset: 0, limit: 0, args: []) { (objs , error ) in
-            debugPrint("query resluts :\(objs) \(error?.localizedDescription ?? "")")
+            debugPrint("TestModel query resluts :\(objs.count) \(error?.localizedDescription ?? "")")
             for obj in objs {
                 if let model = obj as? TestModel{
                     debugPrint(model.objID,model.message,model.date3,model.date1)
                 }
             }
         }
-        
+        Model2.dbQuery(whereStr: nil , orderFields: nil , offset: 0, limit: 0, args: []) { (objs , error ) in
+            debugPrint("Model2 query resluts :\(objs.count) \(error?.localizedDescription ?? "")")
+            for obj in objs {
+                if let model = obj as? Model2{
+                    debugPrint(model.defaultPK,model.objID)
+                }
+            }
+        }
         let rootVC = UINavigationController.init(rootViewController: DemoTableViewController.init())
         
         self.window = UIWindow.init(frame: UIScreen.main.bounds)

@@ -15,6 +15,8 @@ import Foundation
 import FMDB
 
 
+let disableHMDBLog:Bool = true
+
 extension NSObject{
     class func newObjFor(subCls:AnyClass) ->AnyObject{
         
@@ -29,6 +31,7 @@ class HMDBManager: NSObject {
     static let shared = HMDBManager()
     
     var modelClasses:[AnyClass] = []
+    var dbUserID:String = ""
     
     var classPropertyInfos:[String:[String:String]] = [:]
     var tableFieldInfos:[String:[String:String]] = [:]
@@ -37,13 +40,16 @@ class HMDBManager: NSObject {
     var dataBaseQueue:FMDatabaseQueue!
     var dataBase:FMDatabase!
     
-    func setDBModelClasses(classes:[AnyClass]){
-        self.modelClasses.removeAll()
-        self.modelClasses.append(contentsOf: classes)
+    func addDBModelClasses(cls:AnyClass){
+
+        self.modelClasses.append(cls)
+        if dataBase.open(){
+            let _ = self.createTableFor(cls: cls)
+        }
     }
     
     var dbPath:String{
-        let path = (NSSearchPathForDirectoriesInDomains(.cachesDirectory, .userDomainMask, true ).first! as NSString).appendingPathComponent("mydb.sqlite")
+        let path = (NSSearchPathForDirectoriesInDomains(.cachesDirectory, .userDomainMask, true ).first! as NSString).appendingPathComponent("mydb\(dbUserID).sqlite")
         
         if !FileManager.default.fileExists(atPath: path ){
             FileManager.default.createFile(atPath: path, contents: nil , attributes: nil )
@@ -51,7 +57,7 @@ class HMDBManager: NSObject {
         return path
     }
     
-    var dbVersion:Int{
+    private var dbVersion:Int{
         get{
             return UserDefaults.standard.integer(forKey: "HMDBVersion")
         }
@@ -85,9 +91,9 @@ class HMDBManager: NSObject {
         
         if dataBase.open(){
             
-            if dbVersion > lastDBVersion {
-                self.clearAllTables()
-            }
+//            if dbVersion > lastDBVersion {
+//                self.clearAllTables()
+//            }
             
             self.createTables()
         }else{
@@ -111,6 +117,29 @@ class HMDBManager: NSObject {
     }
     
     func createTables() {
+        
+//        int numClasses = objc_getClassList(NULL, 0);
+//        Class *classes = NULL;
+//        classes = (__unsafe_unretained Class *)malloc(sizeof(Class) * numClasses);
+//        numClasses = objc_getClassList(classes, numClasses);
+
+
+        
+        let count:Int32 = objc_getClassList(nil , 0)
+
+        let unsafe =  UnsafeMutablePointer<AnyClass?>.allocate(capacity: Int(count))
+        let buffer:AutoreleasingUnsafeMutablePointer<AnyClass?> = AutoreleasingUnsafeMutablePointer<AnyClass?>.init(unsafe)
+
+        let count2  = objc_getClassList(buffer, count)
+        for index in 0..<count2{
+            
+            if let cls = buffer[Int(index)] {
+            
+                print(cls)
+            }
+        }
+        print("classes count",count2,count)
+        
         
         for cls in self.modelClasses{
 //            let tableName:String = "\(cls.class())"
@@ -141,8 +170,6 @@ class HMDBManager: NSObject {
             if column.characters.count > 0 {
                 currentColumns.append(column)
             }
-            
-//            debugPrint("table \(tableName) column:\(dic["name"])  \(dic["type"]) ) ")
         }
         
         var shouldAddColumns:[String] = []
@@ -158,7 +185,7 @@ class HMDBManager: NSObject {
             let sqltype = self.sqlTypeOf(cls: cls, field: column).last!
             if sqltype.characters.count > 0 {
                 if  !self.alertTable(cls: cls , addColumn: column, type: sqltype){
-                    debugPrint("fail to alert table \(tableName) add column \(column) \(sqltype)")
+                    disableHMDBLog ? () : debugPrint("fail to alert table \(tableName) add column \(column) \(sqltype)")
                 }
             }
         }
@@ -255,11 +282,11 @@ class HMDBManager: NSObject {
                 colums = (colums as NSString).substring(to: colums.characters.count - 1)
             }
         }else{
-            debugPrint("class \(cls) is not in db handled ")
+            disableHMDBLog ? () : debugPrint("class \(cls) is not in db handled ")
         }
         
         if colums.characters.count == 0 {
-            debugPrint("create table \(tableName) but has no surported dbFields")
+            disableHMDBLog ? () : debugPrint("create table \(tableName) but has no surported dbFields")
             return ""
         }
         return "CREATE TABLE IF NOT EXISTS \(tableName) (\(colums))"
@@ -299,12 +326,11 @@ class HMDBManager: NSObject {
         }else if rawType.contains("NSNumber") {
             sqlType = "double"
         }else{
-            debugPrint("database not surport for type of \(field)")
+            disableHMDBLog ? () : debugPrint("database not surport for type of \(field)")
         }
         
         return [rawType,sqlType]
     }
-    
 }
 
 

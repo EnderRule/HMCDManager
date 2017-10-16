@@ -17,7 +17,6 @@ import UIKit
 }
 
 
-
 extension NSObject {
     
     static private var kdefaultPK =  "HMDBdefaultPK"
@@ -27,7 +26,7 @@ extension NSObject {
         return "\(self.classForCoder())"
     }
     
-    private var defaultPK:Int{
+    var defaultPK:Int{
         get{
             return objc_getAssociatedObject(self , &NSObject.kdefaultPK) as? Int ?? 0
         }
@@ -48,11 +47,12 @@ extension NSObject {
     
     
     
-    public convenience init(primaryKey:Any,createIfNoneExist:Bool){
+    public convenience init(primaryValue:Any,createIfNoneExist:Bool){
         self.init()
         let tableName:String = "\(self.classForCoder)"
-        let primaryKey:String = HMDBManager.shared.tablePrimaryKeyName[tableName] ?? ""
-        let pkvalue = NSObject.serialized(value: primaryKey)
+        let primaryKey:String = HMDBManager.shared.tablePrimaryKeyName[tableName] ?? "defaultPK"
+        let pkvalue = NSObject.serialized(value: primaryValue)
+
         let sql = "select * from \"\(tableName)\" where \"\(primaryKey)\" = ?"
         
         var fieldValues:[AnyHashable:Any ] = [primaryKey:pkvalue]
@@ -66,6 +66,11 @@ extension NSObject {
         rs?.close()
         
         self.setValuesWith(fieldValues: fieldValues)
+        
+        if createIfNoneExist {
+            self.isExistInDB = true
+            self.dbAdd(completion: nil)
+        }
     }
     
     @objc func setValuesWith(fieldValues:[AnyHashable:Any]){
@@ -77,16 +82,34 @@ extension NSObject {
                 self.decode(dbValue: obj.value, forkey: obj.key as! String)
             }
         }
+        if fieldValues["defaultPK"] as? Int != nil {
+            self.defaultPK = fieldValues["defaultPK"] as! Int
+        }
     }
-     
-    @objc func dbAdd(completion:@escaping ((Bool)->Void)){
+    
+    func getMaxDefaultPK()->Int{
+        let tableName:String = "\(self.classForCoder)"
+        let sql = "SELECT MAX(defaultPK) as defaultPK  FROM \(tableName)"
+        
+        let rs = HMDBManager.shared.dataBase.executeQuery(sql , withArgumentsIn: [])
+        if rs?.next() ?? false {
+            
+            let maxPK = rs!.int(forColumn: "defaultPK")
+            disableHMDBLog ? () : debugPrint("max defaultPK of \(tableName) \(maxPK) ")
+            rs?.close()
+            return Int(maxPK)
+        }else{
+            return 0
+        }
+    }
+    @objc func dbAdd(completion: ((Bool)->Void)?){
         self.dbSave(insert: true , completion: completion)
     }
-    @objc func dbUpdate(completion:@escaping ((Bool)->Void)){
+    @objc func dbUpdate(completion: ((Bool)->Void)?){
         self.dbSave(insert: false , completion: completion)
     }
     
-    @objc func dbSave(completion:@escaping ((Bool)->Void)){
+    @objc func dbSave(completion: ((Bool)->Void)?){
         self.dbSave(insert: nil , completion: completion)
     }
     
@@ -94,9 +117,7 @@ extension NSObject {
         
         let tableName:String = "\(self.classForCoder)"
         let primaryKey = (self as! HMDBModelDelegate).dbPrimaryKey() ?? "defaultPK"
-
-
-
+ 
         var dbvalues:[Any] = []
         
         var fields:[String] = ((HMDBManager.shared.tableFieldInfos[tableName] ?? [:]) as NSDictionary).allKeys as? [String] ?? []
@@ -106,34 +127,43 @@ extension NSObject {
         }
         if !fields.contains(primaryKey){
             fields.append(primaryKey)
-            dbvalues.append(self.defaultPK)
-        }
-        
-        if self.isExistInDB{
-        
-        
-        }else{
             
-            var action:String = ""
-            if insert == nil {
-                action = "insert or replace"
-            }else if insert!{
-                action = "insert"
+            if insert ?? false {
+                if self.isExistInDB{
+                    dbvalues.append(self.defaultPK)
+                }else{
+                    dbvalues.append(self.getMaxDefaultPK()+1)
+                }
             }else{
-                action = "replace"
+                dbvalues.append(self.defaultPK)
             }
-            
-            let columns = (fields as NSArray).componentsJoined(by: "\",\"")
-            var valuesHolders = ("" as NSString).padding(toLength: fields.count * 2, withPad: "?,", startingAt: 0)
-            valuesHolders = (valuesHolders as NSString).substring(to: valuesHolders.characters.count - 1)
-            let sql:String = "\(action) into \"\(tableName)\" (\"\(columns)\") values (\(valuesHolders))"
-            
-            debugPrint("db save sql:\(sql) values:\(dbvalues)")
-            
-            let result = HMDBManager.shared.dataBase.executeUpdate(sql , withArgumentsIn: dbvalues)
-            
-            completion?(result)
         }
+        
+        var action:String = ""
+        if insert == nil {
+            if self.isExistInDB{
+                action = "replace"
+            }else{
+                action = "insert or replace"
+            }
+        }else if insert!{
+        
+            action = "insert"
+        }else{
+            action = "replace"
+        }
+        
+        let columns = (fields as NSArray).componentsJoined(by: "\",\"")
+        var valuesHolders = ("" as NSString).padding(toLength: fields.count * 2, withPad: "?,", startingAt: 0)
+        valuesHolders = (valuesHolders as NSString).substring(to: valuesHolders.characters.count - 1)
+        let sql:String = "\(action) into \"\(tableName)\" (\"\(columns)\") values (\(valuesHolders))"
+        
+        disableHMDBLog ? () : debugPrint("db save sql:\(sql) values:\(dbvalues)")
+        
+        let result = HMDBManager.shared.dataBase.executeUpdate(sql , withArgumentsIn: dbvalues)
+        
+        completion?(result)
+        
     }
     
     @objc func dbDelete(completion:((Bool)->Void)?){
@@ -142,7 +172,7 @@ extension NSObject {
         let primaryValue = primaryKey == "defaultPK" ? self.defaultPK : self.encodeValueFor(key: primaryKey)
         let sql = "delete from \(tableName) where \(primaryKey) = \(primaryValue) "
        
-        debugPrint("db delete sql:\(sql) ")
+        disableHMDBLog ? () : debugPrint("db delete sql:\(sql) ")
         completion?( HMDBManager.shared.dataBase.executeStatements(sql))
     }
     
@@ -171,7 +201,7 @@ extension NSObject {
             sql.append(" limit \(limit) ")
         }
         
-        debugPrint("db query sql:\(sql)")
+        disableHMDBLog ? () : debugPrint("db query sql:\(sql)")
         
         let rs =  HMDBManager.shared.dataBase.executeQuery(sql , withArgumentsIn: args)
         if rs != nil  {
@@ -206,7 +236,7 @@ extension NSObject {
                 
                 return self.stringFrom(data: data)
             }catch{
-                debugPrint("can not serialized for array value:\(String(describing: value))")
+                disableHMDBLog ? () : debugPrint("can not serialized for array value:\(String(describing: value))")
                 return ""
             }
         }else if let dic = value as? [AnyHashable:Any]{
@@ -214,7 +244,7 @@ extension NSObject {
                 let data = try JSONSerialization.data(withJSONObject: dic, options: .init(rawValue: 0))
                 return self.stringFrom(data: data)
             }catch{
-                debugPrint("can not serialized for dictionary value:\(String(describing: value))")
+                disableHMDBLog ? () : debugPrint("can not serialized for dictionary value:\(String(describing: value))")
                 return ""
             }
         }else if let url = value as? URL {
@@ -252,7 +282,7 @@ extension NSObject {
                     return NSMutableDictionary.init(dictionary: obj as? [AnyHashable:Any] ?? [:])
                 }
             }catch{
-                debugPrint("can not unserialized for value:\(String(describing: dbvalue))")
+                disableHMDBLog ? () : debugPrint("can not unserialized for value:\(String(describing: dbvalue))")
                 if type.contains("NSArray"){
                     return []
                 }else if type.contains("NSMutableArray"){
