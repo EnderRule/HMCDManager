@@ -19,8 +19,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
 //        APPInfo.runTest()
         
+        debugPrint("test joined:",([] as NSArray).componentsJoined(by: ","))
         
         HMCDManager.shared.userDBName = ""
+        
+        
         
 //        let testobj = Message.newNotInertObj() as! Message
 //        debugPrint(  testobj.getThePrimaryKeyName(),testobj.getThePrimaryKeyName().characters.count )
@@ -32,9 +35,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //        }
         
         HMDBManager.shared.modelClasses = [Message.classForCoder(),TestModel.classForCoder(),Model2.classForCoder()]
-        HMDBManager.shared.openDB()
+        HMDBManager.shared.openDB(userID: "0") { (lastversion) -> Int in
+            return 4
+        }
         
         let testModel = TestModel.init()
+        testModel.sessionID = "session2"
         testModel.objID = "66"
         testModel.message = "63222"
         testModel.date3 = 44
@@ -43,8 +49,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         testModel.extraObj = ["test obj",223,["obj2",42342]]
         testModel.datas = "42342342423".data(using: .utf8)
         testModel.url = URL.init(string: "http://baidu.com")
-        testModel.dbSave { (success ) in
-             debugPrint("testmodel save : \(success)  ")
+//        testModel.dbSave { (success ) in
+//             debugPrint("testmodel save : \(success)  ")
+//        }
+        testModel.dbAdd { (success ) in
+            debugPrint("testmodel add : \(success)  ")
         }
 //        testModel.dbDelete { (success ) in
 //            debugPrint("testmodel delete : \(success)")
@@ -64,7 +73,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             debugPrint("TestModel query resluts :\(objs.count) \(error?.localizedDescription ?? "")")
             for obj in objs {
                 if let model = obj as? TestModel{
-                    debugPrint(model.objID,model.message,model.date3,model.date1,String.init(data: model.datas ?? Data() , encoding: .utf8),model.url )
+                    debugPrint(model.sessionID,model.objID,model.message,model.date3,model.date1,String.init(data: model.datas ?? Data() , encoding: .utf8),model.url )
                 }
             }
         }

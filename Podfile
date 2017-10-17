@@ -8,6 +8,6 @@ target 'HMCDManager' do
   # Pods for HMCDManager
 pod 'FMDB', '~> 2.7.2'
 pod 'FMDB.Model', '~> 0.1.1'
-
+pod 'FMDBMigrationManager', '~> 1.4.1'
 
 end

@@ -12,10 +12,11 @@ import CoreData
 @objc(Message)
 class Message: NSManagedObject,HMDBModelDelegate {
     
+    
     @NSManaged var msgID:Int32
     @NSManaged var senderID:String
     @NSManaged var msgContent:String
- 
+    
     var fff:Int = 333
     
     let primaryKeyName:String = "msgID"
@@ -28,8 +29,8 @@ class Message: NSManagedObject,HMDBModelDelegate {
         return ["msgID","senderID","msgContent"]
     }
     
-    func dbPrimaryKey() -> String? {
-        return "msgID"
+    func dbPrimaryKeys() -> [String] {
+        return ["msgID"]
     }
     
    
@@ -38,6 +39,7 @@ class Message: NSManagedObject,HMDBModelDelegate {
 
 class TestModel:NSObject,HMDBModelDelegate{
  
+    var sessionID:String = ""
     var objID:String = ""
     var message:String = ""
     var date3:Int = 3 // = NSDate()
@@ -48,10 +50,10 @@ class TestModel:NSObject,HMDBModelDelegate{
     var datas:Data?
     var url:URL?
     func dbFields() -> [String] {
-        return ["objID","message","date3","date1","info","extraObj","datas","url"]
+        return ["sessionID","objID","message","date3","date1","info","extraObj","datas","url"]
     }
-    func dbPrimaryKey() -> String? {
-        return "objID"
+    func dbPrimaryKeys() -> [String] {
+        return ["objID","sessionID"]
     }
     
 //    func dbDeleteFields()->[String]{
@@ -66,7 +68,7 @@ class Model2:NSObject,HMDBModelDelegate
     func dbFields() -> [String] {
         return ["objID"]
     }
-    func dbPrimaryKey() -> String? {
-        return nil
+    func dbPrimaryKeys() -> [String] {
+        return []
     }
 }
