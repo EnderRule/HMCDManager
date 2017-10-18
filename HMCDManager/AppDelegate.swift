@@ -35,9 +35,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //        }
         
         HMDBManager.shared.modelClasses = [Message.classForCoder(),TestModel.classForCoder(),Model2.classForCoder()]
-        HMDBManager.shared.openDB(userID: "0") { (lastversion) -> Int in
-            return 4
-        }
+        HMDBManager.shared.openDB(userID: "0")
         
         let testModel = TestModel.init()
         testModel.sessionID = "session3"

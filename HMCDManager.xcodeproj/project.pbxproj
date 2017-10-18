@@ -19,10 +19,10 @@
 		669BC1F91F73C5AC005B5774 /* HMCDManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 669BC1F71F73C5AC005B5774 /* HMCDManager.swift */; };
 		669BC1FA1F73C5AC005B5774 /* NSManagedObject+CoreData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 669BC1F81F73C5AC005B5774 /* NSManagedObject+CoreData.swift */; };
 		66B860421F750B4F005D1FCE /* third.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 66B860401F750B4F005D1FCE /* third.xcdatamodeld */; };
-		66CAE2BE1F8F6F5E0002F28A /* NSObject+Properties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66CAE2BD1F8F6F5E0002F28A /* NSObject+Properties.swift */; };
 		66CAE2C01F8F82A90002F28A /* NSObject+HMDB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66CAE2BF1F8F82A90002F28A /* NSObject+HMDB.swift */; };
 		66DF62381F7B3F5E00BDABC9 /* APPInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 66DF62371F7B3F5E00BDABC9 /* APPInfo.m */; };
 		66DF66EF1F7A2D2A00E59892 /* TestViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 66DF66EE1F7A2D2A00E59892 /* TestViewController.m */; };
+		66FE74671F96ECAA00EBBB37 /* NSObject+Properties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66CAE2BD1F8F6F5E0002F28A /* NSObject+Properties.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -267,10 +267,10 @@
 				669BC1F51F73BD4C005B5774 /* second.xcdatamodeld in Sources */,
 				669BC1F01F7398EB005B5774 /* DemoTableViewController.swift in Sources */,
 				66DF66EF1F7A2D2A00E59892 /* TestViewController.m in Sources */,
+				66FE74671F96ECAA00EBBB37 /* NSObject+Properties.swift in Sources */,
 				669BC1F21F73AB7D005B5774 /* Message.swift in Sources */,
 				66B860421F750B4F005D1FCE /* third.xcdatamodeld in Sources */,
 				669BC1E91F7397BA005B5774 /* first.xcdatamodel in Sources */,
-				66CAE2BE1F8F6F5E0002F28A /* NSObject+Properties.swift in Sources */,
 				664332BA1F8F4098002F7981 /* HMDBManager.swift in Sources */,
 				669BC1D71F73979F005B5774 /* AppDelegate.swift in Sources */,
 				669BC1F91F73C5AC005B5774 /* HMCDManager.swift in Sources */,

@@ -59,7 +59,7 @@ class HMDBManager: NSObject {
     }
     
     
-    func openDB(userID:String,dbVersionBuilder:((Int)->Int)){
+    func openDB(userID:String){
         
         if dataBaseQueue != nil{
             dataBaseQueue.close()
@@ -74,22 +74,20 @@ class HMDBManager: NSObject {
         if dataBase.open(){
             dataBaseQueue.inDatabase({ (db ) in
                 
-                var lastDBVersion:Int = 0
-                let rs = db.executeQuery("PRAGMA user_version", withArgumentsIn: [])
-                if rs?.next() ?? false {
-                    lastDBVersion = Int(rs!.int(forColumnIndex: 0))
-                }
-                rs?.close()
-                
-                let newversion = dbVersionBuilder(lastDBVersion)
-                debugPrint("new db version:\(newversion) lastV:\(lastDBVersion)")
-                if newversion > lastDBVersion{
-                    if !db.executeUpdate("PRAGMA user_version = \(newversion)", withArgumentsIn: []){
-                        disableHMDBLog ? () : debugPrint("update DB user_version \(newversion) failure ")
-                    }
-
-                    self.clearAllTables()
-                }
+//                var lastDBVersion:Int = 0
+//                let rs = db.executeQuery("PRAGMA user_version", withArgumentsIn: [])
+//                if rs?.next() ?? false {
+//                    lastDBVersion = Int(rs!.int(forColumnIndex: 0))
+//                }
+//                rs?.close()
+//                
+//                let newversion = dbVersionBuilder(lastDBVersion)
+//                debugPrint("new db version:\(newversion) lastV:\(lastDBVersion)")
+//                if newversion > lastDBVersion{
+//                    if !db.executeUpdate("PRAGMA user_version = \(newversion)", withArgumentsIn: []){
+//                        disableHMDBLog ? () : debugPrint("update DB user_version \(newversion) failure ")
+//                    }
+//                }
                 
                 //创建表
                 for cls in self.modelClasses{
