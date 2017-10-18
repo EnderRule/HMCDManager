@@ -114,72 +114,76 @@ class HMDBManager: NSObject {
 //        }
         
     }
-    func createTableFor(cls:AnyClass,database:FMDatabase)->Bool{
+    private func createTableFor(cls:AnyClass,database:FMDatabase)->Bool{
+        let tableName = "\(cls)"
+        
+        var currentColumns:[String] = []
+        var currentPrimarykeys:[String] = []
+        let rs = database.getTableSchema(tableName)
+        while rs.next(){
+            let dic = rs.resultDictionary ?? [:]
+            let column = dic["name"] as? String ?? ""
+            
+            if rs.bool(forColumn: "pk"){
+                currentPrimarykeys.append(column)
+            }
+//            disableHMDBLog ? () : debugPrint("\(tableName) \(column) \(rs.bool(forColumn: "pk") ? "is":"is not") primaryKey")
+            
+            if column.characters.count > 0 {
+                currentColumns.append(column)
+            }
+        }
+        
+        //检查主键是否改变，如果有改变，需将原有的table删除
+        if let obj = (cls as! NSObject.Type).init() as? HMDBModelDelegate{
+            var primarykeyFields = obj.dbPrimaryKeys()
+            if primarykeyFields.count <= 0 {
+                primarykeyFields = ["defaultPK"]
+            }
 
+            let currentFieldsStr:String = (currentPrimarykeys.sorted() as NSArray).componentsJoined(by: ",")
+            let newFieldsStr:String = (primarykeyFields.sorted() as NSArray).componentsJoined(by: ",")
+
+            if currentFieldsStr != newFieldsStr && database.tableExists(tableName){
+
+                let dropResult = self.dropTable(cls: cls , database: database )
+                
+                disableHMDBLog ? () : debugPrint("\(tableName) primarykey fields had changed from \(currentFieldsStr) to \(newFieldsStr),\(dropResult) to delete exist table")
+                
+            }
+        }
+        
         let sql:String = self.sqlOfCreateTable(cls:cls)
+
         if sql.characters.count == 0 {
-            return false 
+            return false
         }
         
         database.shouldCacheStatements = true
-        if !database.executeUpdate(sql , withArgumentsIn: []) {
+        
+        let createResult = database.executeUpdate(sql , withArgumentsIn: [])
+//        disableHMDBLog ? () : debugPrint("\(createResult) create table \(tableName) SQL:\(sql)")
+
+        if !createResult {
             return false
         }
-        return true
         
-//        let tableName = "\(cls)"
-//        var currentColumns:[String] = []
-//        var currentPrimarykeys:[String] = []
-//        let rs = database.getTableSchema(tableName)
-//        while rs.next(){
-//            let dic = rs.resultDictionary ?? [:]
-//            let column = dic["name"] as? String ?? ""
-//            
-//            if rs.bool(forColumn: "pk"){
-//                currentPrimarykeys.append(column)
-//            }
-////            debugPrint("\(tableName) \(column) info:\(dic)")
-//            
-//            if column.characters.count > 0 {
-//                currentColumns.append(column)
-//            }
-//        }
+        var shouldAddColumns:[String] = []
         
-//        var shouldAddColumns:[String] = []
-//        
-//        let expectedColumns = ((tableFieldInfos[tableName] ?? [:]) as NSDictionary).allKeys as! [String]
-//        for obj in expectedColumns{
-//            if !currentColumns.contains(obj){
-//                shouldAddColumns.append(obj)
-//            }
-//        }
-//        for column in shouldAddColumns{
-//            let sqltype = self.sqlTypeOf(cls: cls, field: column).last!
-//            if sqltype.characters.count > 0 {
-//                if  !self.alertTable(cls: cls , addColumn: column, type: sqltype,database:dataBase){
-//                    disableHMDBLog ? () : debugPrint("fail to alert table \(tableName) add column \(column) \(sqltype)")
-//                }
-//            }
-//        }
-        
-        
-//        if let obj = (cls as! NSObject.Type).init() as? HMDBModelDelegate{
-//            var primarykeyFields = obj.dbPrimaryKeys()
-//            if primarykeyFields.count <= 0 {
-//                primarykeyFields = ["defaultPK"]
-//            }
-//            
-//            let currentFieldsStr:String = (currentPrimarykeys.sorted() as NSArray).componentsJoined(by: ",")
-//            let newFieldsStr:String = (primarykeyFields.sorted() as NSArray).componentsJoined(by: ",")
-//            
-//            if currentFieldsStr != newFieldsStr{
-//
-//                let result = self.alterTablePrimaryKey(cls: cls , oldFields: currentFieldsStr, newFields: newFieldsStr,database:dataBase)
-////                disableHMDBLog ? () :
-//                    debugPrint("\(result) to alter \(tableName) PrimaryKey  old:\(currentFieldsStr) new:\(newFieldsStr)")
-//
-//            }
-//        }
+        let expectedColumns = ((tableFieldInfos[tableName] ?? [:]) as NSDictionary).allKeys as! [String]
+        for obj in expectedColumns{
+            if !currentColumns.contains(obj){
+                shouldAddColumns.append(obj)
+            }
+        }
+        for column in shouldAddColumns{
+            let sqltype = self.sqlTypeOf(cls: cls, field: column).last!
+            if sqltype.characters.count > 0 {
+                if  !self.alertTable(cls: cls , addColumn: column, type: sqltype,database:dataBase){
+                    disableHMDBLog ? () : debugPrint("fail to alert table \(tableName) add column \(column) \(sqltype)")
+                }
+            }
+        }
         
         return true
         
@@ -201,35 +205,20 @@ class HMDBManager: NSObject {
         
         return database.executeStatements(sql )
     }
-    func alterTablePrimaryKey(cls:AnyClass,oldFields:String,newFields:String,database:FMDatabase)->Bool{
-//        如果表之前有主键则先删除：
-//        alter table 表名 drop constraint 主键名
-//        修改主键：
-//        alter table 表名 add constraint 主键名 primary key (column1,column2,....,column)
-        
-        let tableName = "\(cls)"
-        let dropSql = "alter table \(tableName) delete \(oldFields)"
-        let addSql = "alter table \(tableName) add primary key(\(newFields))"
-        
-        if database.executeUpdate(dropSql, withArgumentsIn: []){
-            let result = database.executeUpdate(addSql, withArgumentsIn: [])
-            if !result{
-                debugPrint("alter Table PrimaryKey: add new failure:\(addSql)")
-            }
-            return result
-        }else{
-            debugPrint("alter Table PrimaryKey: drop old failure:\(dropSql)")
-            return false
-        }
-        
-        
-    }
     
     func alertTable(cls:AnyClass,deleteColumn:String,database:FMDatabase)->Bool{
         
         let tableName = "\(cls)"
         
         let sql = "alter table \(tableName) drop \(deleteColumn)"
+        
+        return database.executeStatements(sql )
+    }
+    
+    func dropTable(cls:AnyClass,database:FMDatabase)->Bool{
+        let tableName = "\(cls)"
+        
+        let sql = "drop table \(tableName)"
         
         return database.executeStatements(sql )
     }
@@ -308,7 +297,7 @@ class HMDBManager: NSObject {
         }else{
             primaryFieldsStr = (primaryKeys as NSArray).componentsJoined(by: ",")
         }
-        let createTableSQL =  "CREATE TABLE IF NOT EXISTS \(tableName)(\(colums),primary key(\(primaryFieldsStr)))"
+        let createTableSQL =  "CREATE TABLE IF NOT EXISTS \(tableName)(\(colums),primary key(\(primaryFieldsStr)))" //
 
         return createTableSQL
     }

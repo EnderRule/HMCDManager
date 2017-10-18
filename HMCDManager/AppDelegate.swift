@@ -40,21 +40,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         
         let testModel = TestModel.init()
-        testModel.sessionID = "session2"
-        testModel.objID = "66"
-        testModel.message = "63222"
+        testModel.sessionID = "session3"
+        testModel.objID = "67"
+        testModel.message = "fsdfsdf21232"
         testModel.date3 = 44
         testModel.date1 = Date().addingTimeInterval(-4242342)
         testModel.info = ["name":"ff","id2":99905]
         testModel.extraObj = ["test obj",223,["obj2",42342]]
         testModel.datas = "42342342423".data(using: .utf8)
         testModel.url = URL.init(string: "http://baidu.com")
-//        testModel.dbSave { (success ) in
-//             debugPrint("testmodel save : \(success)  ")
-//        }
-        testModel.dbAdd { (success ) in
-            debugPrint("testmodel add : \(success)  ")
+        testModel.dbSave { (success ) in
+             debugPrint("testmodel save : \(success)  ")
         }
+//        testModel.dbAdd { (success ) in
+//            debugPrint("testmodel add : \(success)  ")
+//        }
 //        testModel.dbDelete { (success ) in
 //            debugPrint("testmodel delete : \(success)")
 //        }
