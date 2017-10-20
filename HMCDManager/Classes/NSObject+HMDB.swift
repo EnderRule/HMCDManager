@@ -8,7 +8,8 @@
 
 import UIKit
 
-@objc protocol HMDBModelDelegate:NSObjectProtocol {
+
+@objc public  protocol HMDBModelDelegate:NSObjectProtocol {
     func dbFields()->[String]
     func dbPrimaryKeys()->[String]  //返回多个时代表使用联合主键
     
@@ -18,7 +19,11 @@ import UIKit
 }
 
 
-extension NSObject {
+var cachePropertysDic:[String:[objc_property_t]] = [:]
+
+var cachePropertyTypesDic:[String:String] = [:]
+
+public extension NSObject {
     
     static private var kdefaultPK =  "HMDBdefaultPK"
     static private var kisExistInDB =  "HMDBisExistInDB"
@@ -72,19 +77,6 @@ extension NSObject {
         }
     }
     
-    @objc func setValuesWith(fieldValues:[AnyHashable:Any]){
-        let tableName:String = "\(self.classForCoder)"
-
-        let fields:[String:String] = HMDBManager.shared.tableFieldInfos[tableName] ?? [:]
-        for obj in fieldValues{
-            if fields[obj.key as? String ?? ""]?.characters.count ?? 0 > 0 {
-                self.decode(dbValue: obj.value, forkey: obj.key as! String)
-            }
-        }
-        if fieldValues["defaultPK"] as? Int != nil {
-            self.defaultPK = fieldValues["defaultPK"] as! Int
-        }
-    }
     
     func getMaxDefaultPK()->Int{
         let tableName:String = "\(self.classForCoder)"
@@ -161,7 +153,7 @@ extension NSObject {
         valuesHolders = (valuesHolders as NSString).substring(to: valuesHolders.characters.count - 1)
         let sql:String = "\(action) into \"\(tableName)\" (\"\(columns)\") values (\(valuesHolders))"
         
-        disableHMDBLog ? () : debugPrint("HMDB  save sql:\(sql) values:\(dbvalues)")
+//        disableHMDBLog ? () : debugPrint("HMDB save sql:\(sql) values:\(dbvalues)")
         
         let result = HMDBManager.shared.dataBase.executeUpdate(sql , withArgumentsIn: dbvalues)
         if result{
@@ -236,7 +228,9 @@ extension NSObject {
             var objs:[AnyObject] = []
             while rs!.next() {
                 let obj = (self.classForCoder() as! NSObject.Type).init()
-                obj.setValuesWith(fieldValues: rs!.resultDictionary ?? [:])
+                
+                let dic = ((rs!.resultDictionary ?? [:]) as NSDictionary).copy() as! [String:Any]
+                obj.setValuesWith(fieldValues: dic)// rs!.resultDictionary ?? [:])
                 objs.append(obj)
             }
             completion(objs,nil)
@@ -246,12 +240,39 @@ extension NSObject {
     }
     
     //MARK:赋值取值、值的序列化与反序列化
+    @objc func setValuesWith(fieldValues:[AnyHashable:Any]){
+        let tableName:String = "\(self.classForCoder)"
+        
+        let fields:[String:String] = HMDBManager.shared.tableFieldInfos[tableName] ?? [:]
+        for obj in fieldValues{
+            
+            let property = obj.key as? String ?? ""
+            if (fields[property] ?? "").characters.count > 0 {
+                
+                var value = obj.value
+                
+                let valuetype = "\(type(of: value))"
+                let badType = "NSTaggedPointerString"
+                if valuetype == badType || valuetype == "NSContiguousString"{
+                    value = "\(value)"
+                }
+                
+                
+                self.decode(dbValue: value, forkey: property)
+            }
+        }
+        if fieldValues["defaultPK"] as? Int != nil {
+            self.defaultPK = fieldValues["defaultPK"] as! Int
+        }
+    }
+    
+    
     private func encodeValueFor(key:String)->Any{
-        return self.classForCoder.serialized(value:self.value(forKey: key) ?? "")
+        return (self.classForCoder as! NSObject.Type).serialized(value:self.value(forKey: key) ?? "")
     }
     
     private func decode(dbValue:Any,forkey:String){
-        let value = self.classForCoder.unserialized(dbvalue: dbValue , propertyName: forkey)
+        let value = (self.classForCoder as! NSObject.Type).unserialized(dbvalue: dbValue , propertyName: forkey)
         if (value as? NSNull) == nil {  //不为null 才能设置
             self.setValue(value , forKey: forkey)
         }
@@ -286,15 +307,18 @@ extension NSObject {
         return value
     }
     class func unserialized(dbvalue:Any,propertyName:String)->Any{
-        let tablename = "\(self.classForCoder())"
-        let classPropertys = HMDBManager.shared.classPropertyInfos[tablename] ?? [:]
-        let type = classPropertys[propertyName] ?? ""
+        
+        let type = self.cachePropertyTypeOf(theClass: self.classForCoder(), propertyName: propertyName)
+        
+//        debugPrint("unserialized \(self.classForCoder()) \(propertyName) \(dbvalue) \(type)  \(type(of: dbvalue))")
+ 
         
         if type.contains("NSArray")
             || type.contains("NSMutableArray")
             || type.contains("NSDictionary")
             || type.contains("NSMutableDictionary"){
             let str = dbvalue as? String ?? ""
+            
             
             let data = self.dataFrom(string: str)
             do {
@@ -344,13 +368,99 @@ extension NSObject {
         return String.init(data: data , encoding: .utf8) ?? ""
     }
     class  func dataFrom(string:String)->Data{
+        
         return string.data(using: .utf8) ?? Data()
     }
     
+    class func cachePropertyTypeOf(theClass:AnyClass,propertyName:String)->String{
+        let cacheKey = NSStringFromClass(theClass).appending(propertyName)
+        var cacheType = cachePropertyTypesDic[cacheKey]
+    
+        if cacheType?.characters.count ?? 0 <= 0 {
+            var resultType:String?
+
+            let propertys = self.cachePropertysOf(theClass: theClass)
+            for property in propertys{
+                var tempname = ""
+                if let namePointer =  property_getName(property){
+                    tempname = String.init(cString: namePointer)
+                }
+                
+                var tempType = ""
+                if let typePointer = property_getAttributes(property){
+                    tempType = String.init(cString: typePointer)
+                }
+                print(" check 2 ",tempname,tempType)
+                
+                if tempname.characters.count > 0 && tempType.characters.count > 0 {
+                    let tempcacheKey = NSStringFromClass(theClass).appending(tempname)
+                    cachePropertyTypesDic.updateValue(tempType, forKey: tempcacheKey)
+                    
+                    if tempname == propertyName{
+                        resultType = NSString.init(string: tempType) as String
+                    }
+                }
+            }
+            return resultType ?? "NOT_FOUND"
+        }
+        return cacheType ?? "NOT_FOUND"
+    }
+    
+    class func cachePropertysOf(theClass:AnyClass)->[objc_property_t]{
+        let className = NSStringFromClass(theClass)
+        
+        var result = cachePropertysDic[className] ?? []
+        
+        if result.count <= 0 {
+            let temp = self.getAllPropertysOf(theClass: theClass, includeSupers: true )
+            cachePropertysDic.updateValue(temp , forKey: className)
+            result = [objc_property_t].init(temp)
+        }
+        return result
+    }
+    
+    /**
+     获取对象的所有属性名称
+     - includeSupers: 是否包含父类的属性名 ,父类为NSObject 除外
+     - returns: 属性名称数组
+     */
+    public class func getAllPropertysOf(theClass:AnyClass,includeSupers:Bool)->[objc_property_t]{
+        
+        var result = [objc_property_t]()
+        let count = UnsafeMutablePointer<UInt32>.allocate(capacity: 0)
+        let buff = class_copyPropertyList(theClass, count)
+        let countInt = Int(count[0])
+        
+        for i in 0..<countInt{
+            if  let property = buff![i]{
+                result.append(property)
+            }
+        }
+        
+        free(count)
+        free(buff)
+        
+        if includeSupers {
+            if let  superclass = theClass.superclass(){
+                if superclass != NSObject.classForCoder() {
+                    let superresults = self.getAllPropertysOf(theClass: superclass, includeSupers: true)
+                    result.append(contentsOf: superresults)
+                }
+            }
+        }
+        
+        return result
+    }
     
 }
 
 
+func nameOf(property:objc_property_t)->String{
+    if let tempPro = property_getName(property){
+        return  String.init(cString: tempPro)
+    }
+    return ""
+}
 
 
 
